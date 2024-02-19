@@ -1,7 +1,9 @@
 # COP4521_Project
 
 ## Project Overview
-Enter basic information about project here
+MacroMinder
+
+A Web App to track your macros and habits through the week!
 
 ## How to run
 First Steps
@@ -18,4 +20,3 @@ Stopping
   In the backend, type deactivate to get out of the venv. In the frontend, just ctrl+c
 
 ## Contribution Breakdown
-yo mama
