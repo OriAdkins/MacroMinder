@@ -1,4 +1,4 @@
-from app import db
+from COP4521_Project import db 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
