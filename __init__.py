@@ -20,5 +20,13 @@ def login():
 def login_page():
     return render_template('LoginPage.html')
 
+@app.route('/register')
+def register():
+    return redirect(url_for('register_page'))
+
+@app.route('/register_page')
+def register_page():
+    return render_template('RegisterPage.html')
+
 
 from . import models
