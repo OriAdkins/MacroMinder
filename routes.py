@@ -3,7 +3,7 @@ from app import app, db, bcrypt
 from models import User
 
 # Render login page
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 

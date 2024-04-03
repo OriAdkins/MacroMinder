@@ -10,4 +10,4 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 socketio = SocketIO(app)
 
-#from . import routes 
+import routes 
