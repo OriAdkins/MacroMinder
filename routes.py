@@ -8,6 +8,7 @@ def index():
     return render_template('index.html')
 
 # Login route
+# changed to get post, because we need the intial get request - Ori Changes also reflected in html
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form.get('username')
