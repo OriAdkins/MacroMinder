@@ -27,20 +27,20 @@ First Steps\
 
 ## If you are having errors, here are some commands that might help - Ori
 ### Dependencies to install
-``` sudo pip install mysqlclient ``` 
-``` sudo apt install mysql-server ```
-``` pip install pymysql #might not be needed ```
-``` pip install mysql-connector ```
-``` pip install myaql-connector-rf ```
-``` pip install mysql-connector-python ```
-``` pip install Werkzeug ```
-``` sudo apt-get update ```
-``` sudo apt-get install python-mysqldb ```
-``` sudo apt-get install libmysqlclient-dev ```
-``` pip install --upgrade pip ```
-``` pip install --upgrade setuptools ```
-``` sudo apt-get install build-essential ```
-``` pip install mysqlclient ```
+``` sudo pip install mysqlclient ```\
+``` sudo apt install mysql-server ```\
+``` pip install pymysql #might not be needed ```\
+``` pip install mysql-connector ```\
+``` pip install myaql-connector-rf ```\
+``` pip install mysql-connector-python ```\
+``` pip install Werkzeug ```\
+``` sudo apt-get update ```\
+``` sudo apt-get install python-mysqldb ```\
+``` sudo apt-get install libmysqlclient-dev ```\
+``` pip install --upgrade pip ```\
+``` pip install --upgrade setuptools ```\
+``` sudo apt-get install build-essential ```\
+``` pip install mysqlclient ```\
 
 Please note that some of these may not be required, but when troubleshooting we found that after running these, the actual server decided to open.
 
