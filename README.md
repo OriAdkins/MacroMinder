@@ -18,7 +18,7 @@ MacroMinder - A Web App to track your macros and habits through the week!
 
 ## How to Run
 First Steps
-  Pull up the project in a terminal
+  Pull up the project in a terminal\
   Navigate into the server folder
   Install dependencies using
   - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO```
