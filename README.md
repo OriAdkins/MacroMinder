@@ -22,11 +22,11 @@ First Steps\
   Pull up the project in a terminal\
   Navigate into the server folder\
   Install dependencies (Check dependencies section) using
-  - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO```\
+  - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools Flask-Security-Too```
   type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000
 
-## If you are having errors, here are some commands that might help - Ori
-### Dependencies to install
+### If you are having errors, here are some commands that might help - Ori
+#### Dependencies to install
 ``` sudo pip install mysqlclient ```\
 ``` sudo apt install mysql-server ```\
 ``` pip install pymysql #might not be needed ```\
@@ -40,12 +40,9 @@ First Steps\
 ``` pip install --upgrade pip ```\
 ``` pip install --upgrade setuptools ```\
 ``` sudo apt-get install build-essential ```\
-``` pip install mysqlclient ```\
+``` pip install mysqlclient ```
 
 Please note that some of these may not be required, but when troubleshooting we found that after running these, the actual server decided to open.
-
-
-
 
 ## Group Members
 - Ori Adkins (gda20b)
