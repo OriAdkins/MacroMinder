@@ -1,12 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>MacroMinder - Life Coach Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
-   <h1>You are logged in! You are a lifecoach</h1>
- <a href="/">Back</a>
+
+<body id="reportsPage">
+    <div id="header-bar">
+        <h1>Macrominder</h1>
+    </div>
+    <div class="" id="home">
+        <div class="container">
+            <!-- row -->
+            <div class="row tm-content-row tm-mt-big">
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Macro Tracker</h2>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Habits</h2>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
+                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                        <h2 class="tm-block-title">Welcome, you are a lifecoach!</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
+
+
