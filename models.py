@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy import ForeignKey
 
 class User(db.Model):
     # Replace 'User' with the name of your database table containing these exact things - Ori
@@ -8,3 +9,19 @@ class User(db.Model):
     password = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(80), nullable=False)
 
+class Habits(db.Model):
+    __tablename__ = 'Habits'
+    habit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    habit_description = db.Column(db.String(255), nullable=False)
+    #user = db.relationship('User', backref='habits')
+
+class CompletionLog(db.Model):
+    __tablename__ = 'CompletionLog'
+    tracking_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    protein = db.Column(db.Integer, default=0)
+    calories = db.Column(db.Integer, default=0)
+    tasks_completed = db.Column(db.Integer, default=0)
+    weightlbs = db.Column(db.DECIMAL(4, 2), default=150)
