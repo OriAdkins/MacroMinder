@@ -20,6 +20,15 @@ body {
     box-shadow: 5px 20px 50px #000;
 }
 
+/* LoginPage.css */
+.main a {
+    color: #fff; /* Change text color to white */
+    text-align: center; /* Center the text */
+    display: block; /* Make the link a block element */
+    margin-top: 20px; /* Add some top margin for spacing */
+}
+
+
 #chk {
     display: none;
 }
@@ -110,4 +119,12 @@ button:hover {
 
 #chk:checked ~ .signup label {
     transform: scale(.6);
+}
+
+/* Center and style the Register link */
+.signup a {
+    color: #fff; /* Change text color to white */
+    text-align: center; /* Center the text */
+    display: block; /* Make the link a block element */
+    margin-top: 20px; /* Add some top margin for spacing */
 }
