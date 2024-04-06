@@ -39,7 +39,7 @@ def goToRegister():
     return render_template('RegisterPage.html')
 
 # Registration route
-@app.route('/register', methods=['POST','GET'])
+@app.route('/register', methods=['POST'])
 def register():
     username = request.form.get('username')
     password = request.form.get('password')
