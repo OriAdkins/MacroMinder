@@ -34,12 +34,12 @@ def login():
 
 
 # Route to render registration page
-@app.route('/gotoregister', methods=['POST'])
+@app.route('/gotoregister', methods=['POST','GET'])
 def goToRegister():
     return render_template('RegisterPage.html')
 
 # Registration route
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST','GET'])
 def register():
     username = request.form.get('username')
     password = request.form.get('password')
