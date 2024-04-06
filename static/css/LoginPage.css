@@ -12,7 +12,7 @@ body {
 
 .main {
     width: 350px;
-    height: 500px;
+    height: auto;
     background: red;
     overflow: hidden;
     background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
@@ -26,14 +26,14 @@ body {
 
 .signup {
     position: relative;
-    width:100%;
-    height: 100%;
+    width: 100%;
+    height: auto;
 }
 
 h1 {
-    text-align: center; /* Center title */
-    color: #fff; /* Title color */
-    margin-top: 20px; /* Add margin to separate from top */
+    text-align: center;
+    color: #fff;
+    margin-top: 20px;
 }
 
 label {
@@ -41,13 +41,14 @@ label {
     font-size: 2.3em;
     justify-content: center;
     display: flex;
-    margin: 60px;
+    margin: 30px;
     font-weight: bold;
     cursor: pointer;
     transition: .5s ease-in-out;
 }
 
-input {
+input,
+select {
     width: 60%;
     height: 20px;
     background: #e0dede;
@@ -90,8 +91,8 @@ button:hover {
     transition: .8s ease-in-out;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center;
+    align-items: center;
 }
 
 .login label {
@@ -104,7 +105,7 @@ button:hover {
 }
 
 #chk:checked ~ .login label {
-    transform: scale(1);    
+    transform: scale(1);
 }
 
 #chk:checked ~ .signup label {
