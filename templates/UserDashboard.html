@@ -27,7 +27,21 @@
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
+                        <!--new code-->
+                        <!--display the habit descriptions of the habits passed in-->
+                        <ul>
+                            {% for habit in habits %}
+                                <li class="habit-description">{{ habit.habit_description }}</li>
+                            {% endfor %}
+                        </ul>
+                        <!--new code-->
                         <canvas id="barChart"></canvas>
+                        <!--new code1-->
+                        <!--Added button-Ryan-->
+                        <form action="/addhabit" method="GET, POST">
+                            <button type="submit" class="btn btn-primary">Add Habit</button>
+                        </form>
+                        <!--new code1-->
                     </div>
                 </div>
                 <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->

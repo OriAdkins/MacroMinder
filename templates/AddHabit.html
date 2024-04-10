@@ -1,0 +1,17 @@
+<!--Ryan Rowe, rfr21, 2/21/2024
+The program in this file is the individual work of Ryan Rowe-->
+<!DOCTYPE html>
+    <html>
+        <head>
+            <title>Add a Habit</title>
+        </head>
+        <body>
+            <h1>New Habit</h1>
+            <form method="POST" action="/addhabit">
+                <label for="habitdesc">Description</label>
+                <input type="text" name="habitdesc" required>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <button type="button" onclick="window.history.back();">Cancel</button>
+        </body>
+    </html>
