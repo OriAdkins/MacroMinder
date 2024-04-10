@@ -33,7 +33,11 @@ def login():
     # Render the login page (GET request or failed login)
     return render_template('LoginPage.html')
 
-
+#route to log out of current account
+@app.route('/signout', methods=['POST','GET'])
+def logout():
+    session.clear()  #remove all items from a session
+    return redirect(url_for('index'))  #redirect to home page
 
 # Route to render registration page
 @app.route('/gotoregister', methods=['POST','GET'])

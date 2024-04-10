@@ -87,3 +87,9 @@ body {
 .habit-description {
     color: black;
 }
+/*absolute position, margins of 10*/
+.logout-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
