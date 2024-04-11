@@ -3,13 +3,10 @@ from app import app, db, bcrypt
 from models import User, Habits
 
 # Render login page
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
 
 # Login route
 # changed to get post, because we need the intial get request - Ori Changes also reflected in html
-@app.route('/signin', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -37,7 +34,7 @@ def login():
 @app.route('/signout', methods=['POST','GET'])
 def logout():
     session.clear()  #remove all items from a session
-    return redirect(url_for('index'))  #redirect to home page
+    return redirect(url_for('login'))  #redirect to home page
 
 # Route to render registration page
 @app.route('/gotoregister', methods=['POST','GET'])
