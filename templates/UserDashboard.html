@@ -8,6 +8,12 @@
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        /* sets newly generated text to black so it actually shows up */
+        #habit-list li {
+            color: black;
+        }
+    </style>
 </head>
 
 <body id="reportsPage">
@@ -33,31 +39,62 @@
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
-                        <!--new code-->
                         <!--display the habit descriptions of the habits passed in-->
-                        <ul>
+                        <ul id="habit-list">
                             {% for habit in habits %}
-                                <li class="habit-description">{{ habit.habit_description }}</li>
+                            <li class="habit-description">{{ habit.habit_description }}</li>
                             {% endfor %}
                         </ul>
-                        <!--new code-->
                         <canvas id="barChart"></canvas>
-                        <!--new code1-->
-                        <!--Added button-Ryan-->
-                        <form action="/addhabit" method="GET, POST">
+                        <!--button for adding a habit-->
+                        <form id="add-habit-form" method="POST">
+                            <label for="habitdesc">Description</label>
+                            <input type="text" id="habitdesc" name="habitdesc" required>
                             <button type="submit" class="btn btn-primary">Add Habit</button>
                         </form>
-                        <!--new code1-->
-                    </div>
-                </div>
-                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
-                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
-                        <h2 class="tm-block-title">Welcome, you are a user!</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Javascript to handle the dynamic portion of updating a list
+    essentially this is handing the updating asynchronously, ustilizing XML and JSON requests
+    in routes.py we imported jsonify, which allows us to use json objects as data to pass them
+    for dynamically adding the list of habits. -->
+    <script>
+        document.getElementById("add-habit-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            //variable for text description
+            var habitDescription = document.getElementById("habitdesc").value;
+
+            //create a form to append the data added from the text box
+            var formData = new FormData();
+            formData.append('habitdesc', habitDescription);
+
+            //send the form data to the server using fetch API
+            fetch("/addhabit", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    //add habit to the list dynamically
+                    var habitList = document.getElementById("habit-list");
+                    var newHabitItem = document.createElement("li");
+                    newHabitItem.textContent = habitDescription;
+                    habitList.appendChild(newHabitItem);
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
 </body>
 
 </html>

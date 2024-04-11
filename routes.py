@@ -1,4 +1,4 @@
-from flask import render_template, request, flash, session, redirect, url_for
+from flask import render_template, request, flash, session, redirect, url_for, jsonify
 from app import app, db, bcrypt
 from models import User, Habits
 
@@ -79,27 +79,17 @@ def user_dashboard():
 def addHabit():
     if request.method == 'POST':
         description = request.form.get('habitdesc')
-        userid = session.get('userid')  #retrieve userid from session
-        role = session.get('role') #retrieve role from session
-        #if the user is logged in, check if the habit exists 
+        userid = session.get('userid')  # Retrieve userid from session
+        role = session.get('role')  # Retrieve role from session
+
         if userid:
             existingHabit = Habits.query.filter_by(user_id=userid, habit_description=description).first()
-            #if it does not exist, add newHabit to the database. otherwise, notify user the habit exists
             if existingHabit is None:
                 newHabit = Habits(user_id=userid, habit_description=description)
                 db.session.add(newHabit)
                 db.session.commit()
-                if role=='User':
-                    return redirect(url_for('user_dashboard'))  #back to the dashboard
-                elif role=='Admin':
-                    return redirect(url_for('admin_dashboard'))
-                else:
-                    return redirect(url_for('lifecoach_dashboard'))
+                return jsonify({'success': True})  # Return success response
             else:
-                flash('This habit already exists')
+                return jsonify({'success': False, 'message': 'This habit already exists'})  # Return error response
         else:
-            flash('You must be logged in to add a habit.')
-
-
-    # Render the AddHabit page (GET request or failed login)
-    return render_template('AddHabit.html')
+            return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response

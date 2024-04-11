@@ -9,6 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(80), nullable=False)
     role = db.Column(db.String(80), nullable=False)
 
+#table linked to user to define their habits
 class Habits(db.Model):
     __tablename__ = 'Habits'
     habit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -16,6 +17,8 @@ class Habits(db.Model):
     habit_description = db.Column(db.String(255), nullable=False)
     #user = db.relationship('User', backref='habits')
 
+
+# Db table for tracking the macro for the day, tasks_completed is for habits
 class CompletionLog(db.Model):
     __tablename__ = 'CompletionLog'
     tracking_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
