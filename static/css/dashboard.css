@@ -93,3 +93,7 @@ body {
     top: 10px;
     right: 10px;
 }
+/* set user list to black, html defaulting to white???? */
+.user-row {
+    color: black;
+}

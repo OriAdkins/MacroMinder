@@ -26,7 +26,27 @@
             <div class="row tm-content-row tm-mt-big">
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Macro Tracker</h2>
+                        <h2 class="tm-block-title">Users</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr class="user-row"> <!-- add a class so its black text from the css styling-->
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.role }}</td>
+                                        <td>
+                                            <button>Delete</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         <canvas id="lineChart"></canvas>
                     </div>
                 </div>

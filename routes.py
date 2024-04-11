@@ -55,10 +55,17 @@ def register():
     db.session.commit()
     return render_template('LoginPage.html')
 
-
+#error checking to see if someone is an admin (avoids attacks)
+#also uses query to get all users, store in variable, and print them on the dashboard
 @app.route('/admin/dashboard')
 def admin_dashboard():
-    return render_template('AdminDashboard.html')
+    if session.get('role') != 'Admin':
+        return redirect(url_for('login'))
+    
+    users = User.query.all()
+    #lifecoaches = User.query.filter_by(role='LifeCoach').all()
+
+    return render_template('AdminDashboard.html', users=users)
 
 @app.route('/lifecoach/dashboard')
 def lifecoach_dashboard():
@@ -90,3 +97,4 @@ def addHabit():
                 return jsonify({'success': False, 'message': 'This habit already exists'})  # Return error response
         else:
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response
+        
