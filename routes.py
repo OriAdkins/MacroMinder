@@ -67,6 +67,23 @@ def admin_dashboard():
 
     return render_template('AdminDashboard.html', users=users)
 
+#route to delete a user, uses the user_id variable extracted from js
+#get the user info, check if it exists, then delete it.
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if session.get('role') != 'Admin':
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'User Deleted'})
+    else:
+        return jsonify({'success': False, 'message': 'User does not exist'}), 404
+
+
+
 @app.route('/lifecoach/dashboard')
 def lifecoach_dashboard():
     return render_template('LifecoachDashboard.html')
@@ -77,6 +94,7 @@ def user_dashboard():
     habits = Habits.query.filter_by(user_id=userid).all()
     #load UserDashboard.html with habits
     return render_template('UserDashboard.html', habits=habits)
+
 
 #route to render the addhabit page or add a habit
 @app.route('/addhabit', methods=['POST','GET'])

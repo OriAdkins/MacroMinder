@@ -41,7 +41,10 @@
                                         <td>{{ user.username }}</td>
                                         <td>{{ user.role }}</td>
                                         <td>
-                                            <button>Delete</button>
+                                            <!-- Call the delete_user function with user ID -->
+                                            <form action="/admin/delete_user/{{ user.id }}" method="POST">
+                                                <button type="submit">Delete</button>
+                                            </form>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -64,8 +67,7 @@
             </div>
         </div>
     </div>
+
 </body>
 
 </html>
-
-
