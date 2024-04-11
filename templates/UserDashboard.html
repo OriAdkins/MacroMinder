@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +14,6 @@
         }
     </style>
 </head>
-
 <body id="reportsPage">
     <div id="header-bar">
         <h1>Macrominder</h1>
@@ -54,14 +52,16 @@
                         </form>
                     </div>
                 </div>
+                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
+                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                        <h2 class="tm-block-title">Welcome, you are a user!</h2>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Javascript to handle the dynamic portion of updating a list
-    essentially this is handing the updating asynchronously, ustilizing XML and JSON requests
-    in routes.py we imported jsonify, which allows us to use json objects as data to pass them
-    for dynamically adding the list of habits. -->
+    <!-- Javascript to handle the dynamic portion of updating a list -->
     <script>
         document.getElementById("add-habit-form").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent the default form submission
@@ -96,5 +96,4 @@
         });
     </script>
 </body>
-
 </html>
