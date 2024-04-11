@@ -110,9 +110,15 @@ def addHabit():
                 newHabit = Habits(user_id=userid, habit_description=description)
                 db.session.add(newHabit)
                 db.session.commit()
-                return jsonify({'success': True})  # Return success response
+                return jsonify({'success': True, 'habit_id': newHabit.habit_id})  # Return success response
             else:
                 return jsonify({'success': False, 'message': 'This habit already exists'})  # Return error response
         else:
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response
         
+                
+@app.route('/logcompletion', methods=['POST'])
+def logCompletion():
+    userid = session.get('userid')
+    habits = Habits.query.filter_by(user_id=userid).all()
+    return render_template('UserDashboard.html', habits=habits)

@@ -7,12 +7,6 @@
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="dashboard.css">
-    <style>
-        /* sets newly generated text to black so it actually shows up */
-        #habit-list li {
-            color: black;
-        }
-    </style>
 </head>
 <body id="reportsPage">
     <div id="header-bar">
@@ -38,15 +32,18 @@
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--display the habit descriptions of the habits passed in-->
-                        <ul id="habit-list">
+                        <div class="habit-list">
                             {% for habit in habits %}
-                            <li class="habit-description">{{ habit.habit_description }}</li>
+                                <form action="/logcompletion" method="POST">
+                                    <input type="checkbox" id="habit_{{ habit.id }}" name="habit_id" value="{{ habit.id }}" onchange="this.form.submit()">
+                                    <label class="habit-description" for="habit_{{ habit.id }}">{{ habit.habit_description }}</label>
+                                </form>
                             {% endfor %}
-                        </ul>
+                        </div>
                         <canvas id="barChart"></canvas>
                         <!--button for adding a habit-->
-                        <form id="add-habit-form" method="POST">
-                            
+                        <!--onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file)-->
+                        <form id="add-habit-form" method="POST" onsubmit="addHabit(event)">
                             <input type="text" id="habitdesc" name="habitdesc" required>
                             <button type="submit" class="btn btn-primary">Add Habit</button>
                         </form>
@@ -63,37 +60,34 @@
 
     <!-- Javascript to handle the dynamic portion of updating a list -->
     <script>
-        document.getElementById("add-habit-form").addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            //variable for text description
-            var habitDescription = document.getElementById("habitdesc").value;
-
-            //create a form to append the data added from the text box
-            var formData = new FormData();
-            formData.append('habitdesc', habitDescription);
-
-            //send the form data to the server using fetch API
-            fetch("/addhabit", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    //add habit to the list dynamically
-                    var habitList = document.getElementById("habit-list");
-                    var newHabitItem = document.createElement("li");
-                    newHabitItem.textContent = habitDescription;
-                    habitList.appendChild(newHabitItem);
-                } else {
-                    console.error(data.message);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
+        async function addHabit(event) {
+            event.preventDefault(); //prevents form from doing a full-reload when submit is clicked; we just want the UI to update immediately
+            const form = event.target; //event.target is the form element the user submitted
+            //create a FormData object 'data' and send 'data' with the POST request to /addhabit route
+            const data = new FormData(form);
+            const response = await fetch('/addhabit', {
+                method: 'POST',
+                body: data,
             });
-        });
+        
+            //the response is the data returned by /addhabit; await forces code to not execute until the JSON has been parsed
+            const result = await response.json(); //parse JSON response
+            if (result.success) {
+                // Dynamically add the new habit to the UI
+                const habitsList = document.querySelector('.habit-list'); //refer to habit-list earlier in this file
+                const newHabitElement = document.createElement('div'); //create new div; serves as container for the new habit
+                //put html content (habit desc, checkbox) into the div, and bind the values (description, id, etc) to the visible habit on the page
+                //note: id is not a reference to habit_id in database; it allows the html file to uniquely identify each checkbox
+                newHabitElement.innerHTML = `<form action="/logcompletion" method="POST">
+                                                <input type="checkbox" id="habit_${result.habit_id}" name="habit_id" value="${result.habit_id}">
+                                                <label class="habit-description" for="habit_${result.habit_id}">${data.get('habitdesc')}</label>
+                                             </form>`;
+                habitsList.appendChild(newHabitElement);
+                form.reset(); //reset form fields (the add habit entry box)
+            } else {
+                alert(result.message); //show an error message
+            }
+        }
     </script>
 </body>
 </html>
