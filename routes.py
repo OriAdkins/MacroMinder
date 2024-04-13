@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, session, redirect, url_for, jsonify
 from app import app, db, bcrypt
-from models import User, Habits
+from models import User, Habits, CompletionLog
 
 # Render login page
 
@@ -76,8 +76,9 @@ def delete_user(user_id):
     
     user = User.query.get(user_id)
     if user:
-        #query habits table, only selecting with the specified user ID then delete them.
+        #query habits/logs table, only selecting with the specified user ID then delete them.
         Habits.query.filter_by(user_id=user_id).delete()
+        CompletionLog.query.filter_by(user_id=user_id).delete()
         db.session.delete(user)
         db.session.commit()
         return jsonify({'success': True, 'message': 'User Deleted'})
@@ -93,7 +94,7 @@ def lifecoach_dashboard():
 @app.route('/user/dashboard')
 def user_dashboard():
     userid = session.get('userid') #retrive userid from session; id of the logged in user
-    habits = Habits.query.filter_by(user_id=userid).all()
+    habits = Habits.query.filter_by(user_id=userid).all() #get habits and print
     #load UserDashboard.html with habits
     return render_template('UserDashboard.html', habits=habits)
 
@@ -103,8 +104,8 @@ def user_dashboard():
 def addHabit():
     if request.method == 'POST':
         description = request.form.get('habitdesc')
-        userid = session.get('userid')  # Retrieve userid from session
-        role = session.get('role')  # Retrieve role from session
+        userid = session.get('userid')  
+        role = session.get('role') 
 
         if userid:
             existingHabit = Habits.query.filter_by(user_id=userid, habit_description=description).first()
