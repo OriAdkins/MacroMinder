@@ -76,6 +76,8 @@ def delete_user(user_id):
     
     user = User.query.get(user_id)
     if user:
+        #query habits table, only selecting with the specified user ID then delete them.
+        Habits.query.filter_by(user_id=user_id).delete()
         db.session.delete(user)
         db.session.commit()
         return jsonify({'success': True, 'message': 'User Deleted'})
