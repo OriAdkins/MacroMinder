@@ -29,9 +29,9 @@ First Steps\
 #### Dependencies to install
 ``` sudo pip install mysqlclient ```\
 ``` sudo apt install mysql-server ```\
-``` pip install pymysql #might not be needed ```\
+``` pip install pymysql ```\
 ``` pip install mysql-connector ```\
-``` pip install myaql-connector-rf ```\
+``` pip install mysql-connector-rf ```\
 ``` pip install mysql-connector-python ```\
 ``` pip install Werkzeug ```\
 ``` sudo apt-get update ```\
