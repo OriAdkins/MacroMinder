@@ -34,9 +34,12 @@
                         <!--display the habit descriptions of the habits passed in-->
                         <div class="habit-list">
                             {% for habit in habits %}
-                                <form action="/logcompletion" method="POST">
-                                    <input type="checkbox" id="habit_{{ habit.id }}" name="habit_id" value="{{ habit.id }}" onchange="this.form.submit()">
-                                    <label class="habit-description" for="habit_{{ habit.id }}">{{ habit.habit_description }}</label>
+                                <!--if is_completed is true, it renders the checked attribute in the HTML, making the checkbox appear checked-->
+                                <!--habit.id=id of each habit, habit_{{ habit.id }}=id of each checkbox-->
+                                <form onchange="logCompletion(event, this)">
+                                    <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
+                                    <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
+                                    <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
                                 </form>
                             {% endfor %}
                         </div>
@@ -78,7 +81,7 @@
                 const newHabitElement = document.createElement('div'); //create new div; serves as container for the new habit
                 //put html content (habit desc, checkbox) into the div, and bind the values (description, id, etc) to the visible habit on the page
                 //note: id is not a reference to habit_id in database; it allows the html file to uniquely identify each checkbox
-                newHabitElement.innerHTML = `<form action="/logcompletion" method="POST">
+                newHabitElement.innerHTML = `<form method="POST">
                                                 <input type="checkbox" id="habit_${result.habit_id}" name="habit_id" value="${result.habit_id}">
                                                 <label class="habit-description" for="habit_${result.habit_id}">${data.get('habitdesc')}</label>
                                              </form>`;
@@ -87,6 +90,28 @@
             } else {
                 alert(result.message); //show an error message
             }
+        }
+        function logCompletion(event, form) {
+            event.preventDefault(); // Prevent default form submission
+            const checkbox = form.querySelector('[name="completed"]');
+            const formData = new FormData(form);
+            formData.append('completed', checkbox.checked ? 'True' : 'False');
+
+            fetch('/logcompletion', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Habit completion logged');
+                } else {
+                    alert('Failed to log habit completion');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
     </script>
 </body>

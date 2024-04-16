@@ -15,6 +15,7 @@ class Habits(db.Model):
     habit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     habit_description = db.Column(db.String(255), nullable=False)
+    is_completed = db.Column(db.Boolean, default=False, nullable=False)
     #user = db.relationship('User', backref='habits')
 
 
