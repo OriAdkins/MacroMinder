@@ -31,7 +31,7 @@ First Steps\
 ``` sudo apt install mysql-server ```\
 ``` pip install pymysql ```\
 ``` pip install mysql-connector ```\
-``` pip install mysql-connector-rf ```\
+``` pip install mysql-connector-python-rf ```\
 ``` pip install mysql-connector-python ```\
 ``` pip install Werkzeug ```\
 ``` sudo apt-get update ```\
