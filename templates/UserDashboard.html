@@ -36,7 +36,7 @@
                             {% for habit in habits %}
                                 <!--if is_completed is true, it renders the checked attribute in the HTML, making the checkbox appear checked-->
                                 <!--habit.id=id of each habit, habit_{{ habit.id }}=id of each checkbox-->
-                                <form onchange="logCompletion(event, this)">
+                                <form onchange="checkBox(event, this)">
                                     <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
                                     <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
                                     <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
@@ -91,13 +91,13 @@
                 alert(result.message); //show an error message
             }
         }
-        function logCompletion(event, form) {
+        function checkBox(event, form) {
             event.preventDefault(); // Prevent default form submission
             const checkbox = form.querySelector('[name="completed"]');
             const formData = new FormData(form);
             formData.append('completed', checkbox.checked ? 'True' : 'False');
 
-            fetch('/logcompletion', {
+            fetch('/checkbox', {
                 method: 'POST',
                 body: formData
             })

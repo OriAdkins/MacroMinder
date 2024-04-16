@@ -119,8 +119,8 @@ def addHabit():
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response
         
                 
-@app.route('/logcompletion', methods=['POST'])
-def logCompletion():
+@app.route('/checkbox', methods=['POST'])
+def checkBox():
     habit_id = request.form.get('habit_id')
     completed = request.form.get('completed')=='True'
     habit = Habits.query.get(habit_id)
