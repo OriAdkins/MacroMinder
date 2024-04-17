@@ -1,5 +1,6 @@
 from app import db
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 class User(db.Model):
     # Replace 'User' with the name of your database table containing these exact things - Ori
@@ -15,6 +16,7 @@ class Habits(db.Model):
     habit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     habit_description = db.Column(db.String(255), nullable=False)
+    user = relationship("User", backref="habits")
     #user = db.relationship('User', backref='habits')
 
 
@@ -28,3 +30,12 @@ class CompletionLog(db.Model):
     calories = db.Column(db.Integer, default=0)
     tasks_completed = db.Column(db.Integer, default=0)
     weightlbs = db.Column(db.DECIMAL(4, 2), default=150)
+    user = relationship("User", backref="completionlogs")
+
+# Db table for keeping life coaches linked with their standard users
+class CoachingGroups(db.Model):
+    __tablename__ = 'CoachingGroups'
+    life_coach_id = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
+    life_coach = relationship("User", foreign_keys=[life_coach_id])
+    user = relationship("User", foreign_keys=[user_id])
