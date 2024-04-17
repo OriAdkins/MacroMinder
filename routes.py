@@ -104,8 +104,7 @@ def user_dashboard():
 def addHabit():
     if request.method == 'POST':
         description = request.form.get('habitdesc')
-        userid = session.get('userid')  
-        role = session.get('role') 
+        userid = session.get('userid') 
 
         if userid:
             existingHabit = Habits.query.filter_by(user_id=userid, habit_description=description).first()
@@ -120,8 +119,14 @@ def addHabit():
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response
         
                 
-@app.route('/logcompletion', methods=['POST'])
-def logCompletion():
-    userid = session.get('userid')
-    habits = Habits.query.filter_by(user_id=userid).all()
-    return render_template('UserDashboard.html', habits=habits)
+@app.route('/checkbox', methods=['POST'])
+def checkBox():
+    habit_id = request.form.get('habit_id')
+    completed = request.form.get('completed')=='True'
+    habit = Habits.query.get(habit_id)
+    if habit:
+        habit.is_completed = completed
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Habit not found'})

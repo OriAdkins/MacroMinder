@@ -31,14 +31,19 @@ First Steps\
 ``` sudo apt install mysql-server ```\
 ``` pip install pymysql ```\
 ``` pip install mysql-connector ```\
-``` pip install mysql-connector-rf ```\
+``` pip install mysql-connector-python-rf ```\
 ``` pip install mysql-connector-python ```\
 ``` pip install Werkzeug ```\
 ``` sudo apt-get update ```\
 ``` sudo apt-get install python-mysqldb ```\
 ``` sudo apt-get install libmysqlclient-dev ```\
+``` pip install Flask-SQLAlchemy ```\
+``` pip install Flask-Bcrypt ```\
+``` pip install Flask-SocketIO ```\
 ``` pip install --upgrade pip ```\
 ``` pip install --upgrade setuptools ```\
+``` pip install --upgrade Flask ```\
+``` pip install --upgrade Werkzeug ```\
 ``` sudo apt-get install build-essential ```\
 ``` pip install mysqlclient ```
 
