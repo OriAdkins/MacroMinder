@@ -178,3 +178,27 @@ def checkBox():
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
+    
+@app.route('/edithabit', methods=['POST'])
+def editHabit():
+    habit_id = request.form.get('habit_id')
+    new_description = request.form.get('new_description')
+    habit = Habits.query.get(habit_id)
+    if habit:
+        habit.habit_description = new_description
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Habit not found'})
+
+@app.route('/deletehabit', methods=['POST'])
+def deleteHabit():
+    habit_id = request.form.get('habit_id')
+    habit = Habits.query.get(habit_id)
+    print("habit id: ", habit_id)
+    if habit:
+        db.session.delete(habit)
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Habit not found'})
