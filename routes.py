@@ -14,16 +14,17 @@ def login():
         existingUser = User.query.filter_by(username=username).first()
 
         if existingUser and bcrypt.check_password_hash(existingUser.password, password):
-            session['userid'] = existingUser.id  #store the user id in session
-            session['role'] = existingUser.role #store the user role in session
-            # Check user role and redirect accordingly
-            print("User role:", existingUser.role)  # Debug print to check the user's role
+            #store the user id in current session
+            session['userid'] = existingUser.id 
+            session['role'] = existingUser.role
+            #Check user role and redirect accordingly
+            #print("User role:", existingUser.role)  # Debug print to check the user's role
             if existingUser.role == 'Admin':
-                return redirect(url_for('admin_dashboard'))  # Redirect to admin dashboard
+                return redirect(url_for('admin_dashboard'))  
             elif existingUser.role == 'LifeCoach':
-                return redirect(url_for('lifecoach_dashboard'))  # Redirect to lifecoach dashboard
+                return redirect(url_for('lifecoach_dashboard'))  
             else:
-                return redirect(url_for('user_dashboard'))   # Redirect to user dashboard
+                return redirect(url_for('user_dashboard'))
         else:
             flash('Invalid username or password')
 
@@ -31,6 +32,8 @@ def login():
     return render_template('LoginPage.html')
 
 #route to log out of current account
+#Explaining the use of session here, it is a feature provided by flask that
+#essentially saves the 'current' users information to persist through multiple requests
 @app.route('/signout', methods=['POST','GET'])
 def logout():
     session.clear()  #remove all items from a session
@@ -67,25 +70,70 @@ def admin_dashboard():
 
     return render_template('AdminDashboard.html', users=users)
 
-#route to delete a user, uses the user_id variable extracted from js
-#get the user info, check if it exists, then delete it.
+#Admin functionality of the delete portion of crud, new simplified version to make things simpler.
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     if session.get('role') != 'Admin':
-        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+        #if they arent an admin and try to request this form (somehow) then redirect them to login
+        return redirect(url_for('login'))
     
     user = User.query.get(user_id)
     if user:
-        #query habits/logs table, only selecting with the specified user ID then delete them.
+        #filter by the user id, which essentially picks the user to delete, since they are unique
         Habits.query.filter_by(user_id=user_id).delete()
         CompletionLog.query.filter_by(user_id=user_id).delete()
         db.session.delete(user)
         db.session.commit()
-        return jsonify({'success': True, 'message': 'User Deleted'})
-    else:
-        return jsonify({'success': False, 'message': 'User does not exist'}), 404
+
+    return redirect(url_for('admin_dashboard'))
+
+#Route/function for processing the post request for editing a user
+@app.route('/admin/edit_user/<int:user_id>', methods=['POST'])
+def update_user(user_id):
+    #first check against the role (like the other admin functions)
+    if session.get('role') != 'Admin':
+        return redirect(url_for('login'))
+    
+    user = User.query.get(user_id)
+    if user:
+        #this is essentially the same thing as register, but in a pop-up
+        new_username = request.form.get('username')
+        new_role = request.form.get('role')
+        new_password = request.form.get('password')
+        
+        #this updates the username, then we commit after it updates
+        if new_username:
+            user.username = new_username
+        if new_role:
+            user.role = new_role
+        if new_password:
+            hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            user.password = hashed_password
+
+        db.session.commit()
+
+    return redirect(url_for('admin_dashboard'))
 
 
+#route for admin page that allows them to create users.  
+@app.route('/admin/create_user', methods=['POST'])
+def create_user():
+    if session.get('role') != 'Admin':
+        return redirect(url_for('login'))
+    
+    #essentially the same as login, just only accessible from the admin dashboard
+    username = request.form.get('username')
+    password = request.form.get('password')
+    role = request.form.get('role')
+    hashedPassword = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    newUser = User(username=username, password=hashedPassword, role=role)
+
+    db.session.add(newUser)
+    db.session.commit()
+    #using the redirect here acts as a dummy 'refresh' though I think it is better to use Jsonify and JS to handle that.
+    #also used in other admin functions
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/lifecoach/dashboard')
 def lifecoach_dashboard():

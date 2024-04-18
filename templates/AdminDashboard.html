@@ -8,13 +8,20 @@
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .user-row td {
+            color: black;
+        }
+        .edit-form {
+            display: none;
+        }
+    </style>
 </head>
 
 <body id="reportsPage">
     <div id="header-bar">
         <h1>Macrominder</h1>
     </div>
-    <!--logout button-->
     <div class="logout-button">
         <form action="/signout" method="GET, POST">
             <button type="submit" class="btn btn-primary">Logout</button>
@@ -22,51 +29,88 @@
     </div>
     <div class="" id="home">
         <div class="container">
-            <!-- row -->
             <div class="row tm-content-row tm-mt-big">
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Users</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Username</th>
-                                        <th>Role</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for user in users %}
-                                    <tr class="user-row"> <!-- add a class so its black text from the css styling-->
-                                        <td>{{ user.username }}</td>
-                                        <td>{{ user.role }}</td>
-                                        <td>
-                                            <!-- Call the delete_user function with user ID -->
-                                            <form action="/admin/delete_user/{{ user.id }}" method="POST">
-                                                <button type="submit">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <h2 class="tm-block-title">List of Current Users</h2>
+                        <table>
+                            <thead>
+                                <tr class="user-row">
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr class="user-row">
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>
+                                        <button class="edit-btn" data-user-id="{{ user.id }}">Edit</button>
+                                        <form action="/admin/delete_user/{{ user.id }}" method="POST">
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr class="edit-form" id="edit-form-{{ user.id }}">
+                                    <td colspan="3">
+                                        <form action="/admin/edit_user/{{ user.id }}" method="POST">
+                                            <input type="text" name="username" placeholder="Username" value="{{ user.username }}" required>
+                                            <input type="password" name="password" placeholder="Password" required>
+                                            <select name="role" required>
+                                                <option value="User">User</option>
+                                                <option value="LifeCoach">Life Coach</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <button type="submit">Save Changes</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                         <canvas id="lineChart"></canvas>
                     </div>
                 </div>
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Habits</h2>
+                        <h2 class="tm-block-title">Create a User</h2>
+                        <form action="/admin/create_user" method="POST">
+                            <input type="text" name="username" placeholder="Username" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <select name="role" required>
+                                <option value="User">User</option>
+                                <option value="LifeCoach">Life Coach</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <button type="submit">Create User</button>
+                        </form>
                         <canvas id="barChart"></canvas>
                     </div>
                 </div>
-                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
-                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                <div class="tm-col tm-col-big"> 
+                    <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Welcome, you are an admin!</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        //JavaScript to toggle edit form visibility
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.edit-btn');
+            editButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const userId = btn.getAttribute('data-user-id');
+                    const editForm = document.getElementById(`edit-form-${userId}`);
+                    editForm.classList.toggle('edit-form'); //show/hide the form
+                });
+            });
+        });
+    </script>
 
 </body>
 
