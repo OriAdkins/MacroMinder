@@ -11,16 +11,6 @@ class HabitService:
         for habit in habits:
             db.session.delete(habit)
         db.session.commit()
-        
-    @staticmethod
-    def delete_user_habit(habit_id):
-        habit = Habits.query.get(habit_id)
-        if habit:
-            db.session.delete(habit)
-            db.session.commit()
-            return True
-        else:
-            return False
 
     @staticmethod
     def list_habits(user_id):
