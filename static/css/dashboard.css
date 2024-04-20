@@ -97,3 +97,24 @@ body {
 .user-row {
     color: black;
 }
+
+#habits-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#habits-header button {
+    background: transparent;
+    color: black;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#currentDate {
+    color: black;
+    font-size: 15px;
+    margin: 0 15px;
+}

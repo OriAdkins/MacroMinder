@@ -67,6 +67,11 @@
                 </div>
                 <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
                     <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                        <div class="dashboard-header">
+                            <button id="prevDateBtn" onclick="changeDate(-1)">&lt;</button>
+                            <h2 class="tm-block-title" id="currentDate"></h2>
+                            <button id="nextDateBtn" onclick="changeDate(1)">&gt;</button>
+                        </div>
                         <h2 class="tm-block-title">This is {{ user_username }}'s dashboard!</h2>
                     </div>
                 </div>
@@ -76,24 +81,55 @@
 
     <!-- Javascript to handle the dynamic portion of updating a list -->
     <script>
+        let currentDate = new Date();
+
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function changeDate(direction) {
+            currentDate.setDate(currentDate.getDate() + direction);
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+            fetchHabitsForDate(currentDate);
+        }
+
+        async function fetchHabitsForDate(date) {
+            const response = await fetch(`/user/habits/${date.toISOString().split('T')[0]}`);
+            const data = await response.json();
+            const habitsList = document.querySelector('.habit-list');
+            habitsList.innerHTML = '';
+
+            data.habits.forEach(habit => {
+                const newHabitElement = document.createElement('div');
+                newHabitElement.innerHTML = `<form id="habitForm_${habit.habit_id}" onchange="checkBox(event, this)">
+                                                <input type="hidden" name="habit_id" value="${habit.habit_id}">
+                                                <input type="checkbox" id="habit_${habit.habit_id}" name="completed" value="True" ${habit.is_completed ? 'checked' : ''}>
+                                                <label class="habit-description" for="habit_${habit.habit_id}">${habit.habit_description}</label>
+                                                <button type="button" onclick="showEditPopup('${habit.habit_id}', '${habit.habit_description}')">Edit</button>
+                                                <button type="button" onclick="deleteHabit('${habit.habit_id}', event)">Delete</button>
+                                            </form>`;
+                habitsList.appendChild(newHabitElement);
+            });
+        }
+
+        window.onload = function() {
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+            fetchHabitsForDate(currentDate);
+        }
+
         async function addHabit(event) {
-            event.preventDefault(); // prevents form from doing a full-reload when submit is clicked; we just want the UI to update immediately
-            const form = event.target; // event.target is the form element the user submitted
-            // create a FormData object 'data' and send 'data' with the POST request to /addhabit route
+            event.preventDefault();
+            const form = event.target;
             const data = new FormData(form);
             const response = await fetch('/addhabit', {
                 method: 'POST',
                 body: data,
             });
-        
-            // the response is the data returned by /addhabit; await forces code to not execute until the JSON has been parsed
-            const result = await response.json(); // parse JSON response
+            const result = await response.json();
             if (result.success) {
-                // Dynamically add the new habit to the UI
-                const habitsList = document.querySelector('.habit-list'); // refer to habit-list earlier in this file
-                const newHabitElement = document.createElement('div'); // create new div; serves as container for the new habit
-                // put html content (habit desc, checkbox) into the div, and bind the values (description, id, etc) to the visible habit on the page
-                // note: id is not a reference to habit_id in database; it allows the html file to uniquely identify each checkbox
+                const habitsList = document.querySelector('.habit-list');
+                const newHabitElement = document.createElement('div');
                 newHabitElement.innerHTML = `<form id="habitForm_${result.habit_id}" onchange="checkBox(event, this)">
                                                 <input type="hidden" name="habit_id" value="${result.habit_id}">
                                                 <input type="checkbox" id="habit_${result.habit_id}" name="completed" value="True">
@@ -102,13 +138,14 @@
                                                 <button type="button" onclick="deleteHabit('${result.habit_id}', event)">Delete</button>
                                             </form>`;
                 habitsList.appendChild(newHabitElement);
-                form.reset(); // reset form fields (the add habit entry box)
+                form.reset();
             } else {
-                alert(result.message); // show an error message
+                alert(result.message);
             }
         }
+
         function checkBox(event, form) {
-            event.preventDefault(); // prevent default form submission
+            event.preventDefault();
             const checkbox = form.querySelector('[name="completed"]');
             const formData = new FormData(form);
             formData.append('completed', checkbox.checked ? 'True' : 'False');
@@ -129,6 +166,7 @@
                 console.error('Error:', error);
             });
         }
+
         function showEditPopup(habitId, currentDescription) {
             document.getElementById('editHabitId').value = habitId;
             document.getElementById('newHabitDescription').value = currentDescription;
@@ -152,7 +190,6 @@
             .then(data => {
                 if (data.success) {
                     console.log('Habit updated');
-                    // update description label dynamically; updates the label for habit description
                     document.querySelector(`label[for='habit_${form.elements['habit_id'].value}']`).textContent = form.elements['new_description'].value;
                     closeEditPopup();
                 } else {
@@ -164,9 +201,10 @@
                 console.error('Error:', error);
             });
         }
+
         function deleteHabit(habitId, event) {
             event.preventDefault();
-            const form = document.getElementById(`habitForm_${habitId}`); // get the form specified by the habitId passed in
+            const form = document.getElementById(`habitForm_${habitId}`);
             const formData = new FormData(form);
 
             fetch('/deletehabit', {
@@ -177,7 +215,6 @@
             .then(data => {
                 if (data.success) {
                     console.log('Habit deleted');
-                    // updating UI to remove the habit
                     const habitElement = document.getElementById(`habitForm_${habitId}`);
                     habitElement.parentNode.removeChild(habitElement);
                     closeEditPopup();

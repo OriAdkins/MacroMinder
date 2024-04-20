@@ -32,11 +32,13 @@
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--display the habit descriptions of the habits passed in-->
+                        <div id="habits-header">
+                            <button onclick="previousDate()">◀</button>
+                            <span id="currentDate">Date</span>
+                            <button onclick="nextDate()">▶</button>
+                        </div>
                         <div class="habit-list">
                             {% for habit in habits %}
-                                <!--if is_completed is true, it renders the checked attribute in the HTML, making the checkbox appear checked-->
-                                <!--habit.id=id of each habit, habit_{{ habit.id }}=id of each checkbox-->
-                                <!--each for id is unique, related to the habit it displays-->
                                 <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
                                     <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
                                     <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
@@ -65,8 +67,8 @@
                         </form>
                     </div>
                 </div>
-                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
-                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Welcome, you are a user!</h2>
                     </div>
                 </div>
@@ -76,24 +78,55 @@
 
     <!-- Javascript to handle the dynamic portion of updating a list -->
     <script>
+        const currentDate = new Date();
+
+        window.onload = function() {
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+            fetchHabitsForDate(currentDate);
+        }
+
+        // Function to format date
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Function to fetch habits for a specific date
+        async function fetchHabitsForDate(date) {
+            const formattedDate = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            const response = await fetch(`/habits?date=${formattedDate}`);
+            const habits = await response.json();
+
+            const habitsList = document.querySelector('.habit-list');
+            habitsList.innerHTML = ''; // Clear existing habits
+
+            for (const habit of habits) {
+                const newHabitElement = document.createElement('div');
+                newHabitElement.innerHTML = `<form id="habitForm_${habit.habit_id}" onchange="checkBox(event, this)">
+                                                <input type="hidden" name="habit_id" value="${habit.habit_id}">
+                                                <input type="checkbox" id="habit_${habit.habit_id}" name="completed" value="True" ${habit.is_completed ? 'checked' : ''}>
+                                                <label class="habit-description" for="habit_${habit.habit_id}">${habit.habit_description}</label>
+                                                <button type="button" onclick="showEditPopup('${habit.habit_id}', '${habit.habit_description}')">Edit</button>
+                                                <button type="button" onclick="deleteHabit('${habit.habit_id}', event)">Delete</button>
+                                            </form>`;
+                habitsList.appendChild(newHabitElement);
+            }
+        }
+
+        // Function to add a new habit
         async function addHabit(event) {
-            event.preventDefault(); //prevents form from doing a full-reload when submit is clicked; we just want the UI to update immediately
-            const form = event.target; //event.target is the form element the user submitted
-            //create a FormData object 'data' and send 'data' with the POST request to /addhabit route
+            event.preventDefault();
+            const form = event.target;
             const data = new FormData(form);
             const response = await fetch('/addhabit', {
                 method: 'POST',
                 body: data,
             });
-        
-            //the response is the data returned by /addhabit; await forces code to not execute until the JSON has been parsed
-            const result = await response.json(); //parse JSON response
+
+            const result = await response.json();
             if (result.success) {
-                // Dynamically add the new habit to the UI
-                const habitsList = document.querySelector('.habit-list'); //refer to habit-list earlier in this file
-                const newHabitElement = document.createElement('div'); //create new div; serves as container for the new habit
-                //put html content (habit desc, checkbox) into the div, and bind the values (description, id, etc) to the visible habit on the page
-                //note: id is not a reference to habit_id in database; it allows the html file to uniquely identify each checkbox
+                const habitsList = document.querySelector('.habit-list');
+                const newHabitElement = document.createElement('div');
                 newHabitElement.innerHTML = `<form id="habitForm_${result.habit_id}" onchange="checkBox(event, this)">
                                                 <input type="hidden" name="habit_id" value="${result.habit_id}">
                                                 <input type="checkbox" id="habit_${result.habit_id}" name="completed" value="True">
@@ -102,13 +135,15 @@
                                                 <button type="button" onclick="deleteHabit('${result.habit_id}', event)">Delete</button>
                                             </form>`;
                 habitsList.appendChild(newHabitElement);
-                form.reset(); //reset form fields (the add habit entry box)
+                form.reset();
             } else {
-                alert(result.message); //show an error message
+                alert(result.message);
             }
         }
+
+        // Function to handle habit checkbox
         function checkBox(event, form) {
-            event.preventDefault(); //prevent default form submission
+            event.preventDefault();
             const checkbox = form.querySelector('[name="completed"]');
             const formData = new FormData(form);
             formData.append('completed', checkbox.checked ? 'True' : 'False');
@@ -129,16 +164,20 @@
                 console.error('Error:', error);
             });
         }
+
+        // Function to show edit popup
         function showEditPopup(habitId, currentDescription) {
             document.getElementById('editHabitId').value = habitId;
             document.getElementById('newHabitDescription').value = currentDescription;
             document.getElementById('editPopup').style.display = 'block';
         }
 
+        // Function to close edit popup
         function closeEditPopup() {
             document.getElementById('editPopup').style.display = 'none';
         }
 
+        // Function to submit edited habit
         function submitEdit(event) {
             event.preventDefault();
             const form = document.getElementById('editForm');
@@ -152,7 +191,6 @@
             .then(data => {
                 if (data.success) {
                     console.log('Habit updated');
-                    //update description label dynamically; updates the label for habit description
                     document.querySelector(`label[for='habit_${form.elements['habit_id'].value}']`).textContent = form.elements['new_description'].value;
                     closeEditPopup();
                 } else {
@@ -164,9 +202,11 @@
                 console.error('Error:', error);
             });
         }
+
+        // Function to delete a habit
         function deleteHabit(habitId, event) {
             event.preventDefault();
-            const form = document.getElementById(`habitForm_${habitId}`); //get the form specified by the habitId passed in
+            const form = document.getElementById(`habitForm_${habitId}`);
             const formData = new FormData(form);
 
             fetch('/deletehabit', {
@@ -177,7 +217,6 @@
             .then(data => {
                 if (data.success) {
                     console.log('Habit deleted');
-                    //updating UI to remove the habit
                     const habitElement = document.getElementById(`habitForm_${habitId}`);
                     habitElement.parentNode.removeChild(habitElement);
                     closeEditPopup();
@@ -190,6 +229,23 @@
             });
         }
 
+        // Function to navigate to previous date
+        function previousDate() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            updateDate();
+        }
+
+        // Function to navigate to next date
+        function nextDate() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            updateDate();
+        }
+
+        // Function to update the date and habits for the selected date
+        function updateDate() {
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+            fetchHabitsForDate(currentDate);
+        }
     </script>
 </body>
 </html>
