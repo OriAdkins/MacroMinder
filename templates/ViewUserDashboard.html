@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body id="reportsPage">
+    <div id="header-bar">
+        <h1>Macrominder</h1>
+    </div>
+    <!-- logout button -->
+    <div class="logout-button">
+        <form action="/lifecoach_dashboard" method="GET">
+            <button type="submit" class="btn btn-primary">Back to Life Coach Dash</button>
+        </form>
+    </div>
+    <div class="" id="home">
+        <div class="container">
+            <!-- row -->
+            <div class="row tm-content-row tm-mt-big">
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Macro Tracker</h2>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Habits</h2>
+                        <!-- display the habit descriptions of the habits passed in -->
+                        <div class="habit-list">
+                            {% for habit in habits %}
+                                <!-- if is_completed is true, it renders the checked attribute in the HTML, making the checkbox appear checked -->
+                                <!-- habit.id=id of each habit, habit_{{ habit.id }}=id of each checkbox -->
+                                <!-- each for id is unique, related to the habit it displays -->
+                                <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
+                                    <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
+                                    <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
+                                    <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
+                                    <button type="button" onclick="showEditPopup('{{ habit.habit_id }}', '{{ habit.habit_description }}')">Edit</button>
+                                    <button type="button" onclick="deleteHabit('{{ habit.habit_id }}', event)">Delete</button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                        <!-- edit popup; initially hidden (display: none) until the edit button is clicked -->
+                        <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 2;">
+                            <form id="editForm" onsubmit="submitEdit(event)">
+                                <input type="hidden" id="editHabitId" name="habit_id">
+                                <label for="newHabitDescription">New Description:</label>
+                                <input type="text" id="newHabitDescription" name="new_description" required>
+                                <button type="submit">Submit</button>
+                                <button type="button" onclick="closeEditPopup()">Cancel</button>
+                            </form>
+                        </div>
+                        <canvas id="barChart"></canvas>
+                        <!-- button for adding a habit -->
+                        <!-- onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file) -->
+                        <form id="add-habit-form" method="POST" onsubmit="addHabit(event)">
+                            <input type="text" id="habitdesc" name="habitdesc" required>
+                            <button type="submit" class="btn btn-primary">Add Habit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
+                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
+                        <h2 class="tm-block-title">This is {{ user_username }}'s dashboard!</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript to handle the dynamic portion of updating a list -->
+    <script>
+        async function addHabit(event) {
+            event.preventDefault(); // prevents form from doing a full-reload when submit is clicked; we just want the UI to update immediately
+            const form = event.target; // event.target is the form element the user submitted
+            // create a FormData object 'data' and send 'data' with the POST request to /addhabit route
+            const data = new FormData(form);
+            const response = await fetch('/addhabit', {
+                method: 'POST',
+                body: data,
+            });
+        
+            // the response is the data returned by /addhabit; await forces code to not execute until the JSON has been parsed
+            const result = await response.json(); // parse JSON response
+            if (result.success) {
+                // Dynamically add the new habit to the UI
+                const habitsList = document.querySelector('.habit-list'); // refer to habit-list earlier in this file
+                const newHabitElement = document.createElement('div'); // create new div; serves as container for the new habit
+                // put html content (habit desc, checkbox) into the div, and bind the values (description, id, etc) to the visible habit on the page
+                // note: id is not a reference to habit_id in database; it allows the html file to uniquely identify each checkbox
+                newHabitElement.innerHTML = `<form id="habitForm_${result.habit_id}" onchange="checkBox(event, this)">
+                                                <input type="hidden" name="habit_id" value="${result.habit_id}">
+                                                <input type="checkbox" id="habit_${result.habit_id}" name="completed" value="True">
+                                                <label class="habit-description" for="habit_${result.habit_id}">${data.get('habitdesc')}</label>
+                                                <button type="button" onclick="showEditPopup('${result.habit_id}', '${data.get('habitdesc')}')">Edit</button>
+                                                <button type="button" onclick="deleteHabit('${result.habit_id}', event)">Delete</button>
+                                            </form>`;
+                habitsList.appendChild(newHabitElement);
+                form.reset(); // reset form fields (the add habit entry box)
+            } else {
+                alert(result.message); // show an error message
+            }
+        }
+        function checkBox(event, form) {
+            event.preventDefault(); // prevent default form submission
+            const checkbox = form.querySelector('[name="completed"]');
+            const formData = new FormData(form);
+            formData.append('completed', checkbox.checked ? 'True' : 'False');
+
+            fetch('/checkbox', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Habit completion logged');
+                } else {
+                    alert('Failed to log habit completion');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        function showEditPopup(habitId, currentDescription) {
+            document.getElementById('editHabitId').value = habitId;
+            document.getElementById('newHabitDescription').value = currentDescription;
+            document.getElementById('editPopup').style.display = 'block';
+        }
+
+        function closeEditPopup() {
+            document.getElementById('editPopup').style.display = 'none';
+        }
+
+        function submitEdit(event) {
+            event.preventDefault();
+            const form = document.getElementById('editForm');
+            const formData = new FormData(form);
+
+            fetch('/edithabit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Habit updated');
+                    // update description label dynamically; updates the label for habit description
+                    document.querySelector(`label[for='habit_${form.elements['habit_id'].value}']`).textContent = form.elements['new_description'].value;
+                    closeEditPopup();
+                } else {
+                    alert('Failed to update habit');
+                }
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        function deleteHabit(habitId, event) {
+            event.preventDefault();
+            const form = document.getElementById(`habitForm_${habitId}`); // get the form specified by the habitId passed in
+            const formData = new FormData(form);
+
+            fetch('/deletehabit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Habit deleted');
+                    // updating UI to remove the habit
+                    const habitElement = document.getElementById(`habitForm_${habitId}`);
+                    habitElement.parentNode.removeChild(habitElement);
+                    closeEditPopup();
+                } else {
+                    alert('Failed to delete habit');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

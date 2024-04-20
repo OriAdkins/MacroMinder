@@ -185,3 +185,14 @@ def deleteHabit():
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
+    
+@app.route('/lifecoach/viewuserdashboard/<int:user_id>')
+def view_user_dashboard(user_id):
+    if session.get('role') != 'LifeCoach':
+        return redirect(url_for('login'))
+
+    user = User.query.get(user_id)
+    user_username = user.username  #fetch user
+    habits = HabitService.list_habits(user_id)
+
+    return render_template('ViewUserDashboard.html', user=user, user_username=user_username, habits=habits)
