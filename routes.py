@@ -1,6 +1,7 @@
 from flask import render_template, request, flash, session, redirect, url_for, jsonify
 from app import app, db, bcrypt
 from models import User, Habits, CompletionLog
+from services.UserService import UserService, HabitService, CompletionLogService
 
 # Render login page
 
@@ -50,9 +51,9 @@ def register():
     username = request.form.get('username')
     password = request.form.get('password')
     role = request.form.get('role')
-    hashedPassword = bcrypt.generate_password_hash(password).decode('utf-8')
-    
-    newUser = User(username=username, password=hashedPassword, role=role)
+
+    #This calls the service for create user
+    newUser = UserService.create_user(username, password, role)
 
     db.session.add(newUser)
     db.session.commit()
@@ -65,7 +66,7 @@ def admin_dashboard():
     if session.get('role') != 'Admin':
         return redirect(url_for('login'))
     
-    users = User.query.all()
+    users = UserService.list_users()
     #lifecoaches = User.query.filter_by(role='LifeCoach').all()
 
     return render_template('AdminDashboard.html', users=users)
@@ -74,17 +75,18 @@ def admin_dashboard():
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     if session.get('role') != 'Admin':
-        #if they arent an admin and try to request this form (somehow) then redirect them to login
+        # Redirect the user to the login page if they are not an admin
         return redirect(url_for('login'))
     
-    user = User.query.get(user_id)
-    if user:
-        #filter by the user id, which essentially picks the user to delete, since they are unique
-        Habits.query.filter_by(user_id=user_id).delete()
-        CompletionLog.query.filter_by(user_id=user_id).delete()
-        db.session.delete(user)
-        db.session.commit()
-
+    #delete all related data first, then the user
+    #utilizing service layer
+    HabitService.delete_all_user_habits(user_id)
+    
+    CompletionLogService.delete_all_user_completion_logs(user_id)
+    
+    success = UserService.delete_user(user_id)
+    
+    # Redirect the user to the admin dashboard regardless of the outcome
     return redirect(url_for('admin_dashboard'))
 
 #Route/function for processing the post request for editing a user
@@ -94,23 +96,11 @@ def update_user(user_id):
     if session.get('role') != 'Admin':
         return redirect(url_for('login'))
     
-    user = User.query.get(user_id)
-    if user:
-        #this is essentially the same thing as register, but in a pop-up
-        new_username = request.form.get('username')
-        new_role = request.form.get('role')
-        new_password = request.form.get('password')
-        
-        #this updates the username, then we commit after it updates
-        if new_username:
-            user.username = new_username
-        if new_role:
-            user.role = new_role
-        if new_password:
-            hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-            user.password = hashed_password
-
-        db.session.commit()
+    new_username = request.form.get('username')
+    new_role = request.form.get('role')
+    new_password = request.form.get('password')
+    
+    UserService.update_user(user_id, new_username, new_password, new_role)
 
     return redirect(url_for('admin_dashboard'))
 
@@ -125,12 +115,9 @@ def create_user():
     username = request.form.get('username')
     password = request.form.get('password')
     role = request.form.get('role')
-    hashedPassword = bcrypt.generate_password_hash(password).decode('utf-8')
-    
-    newUser = User(username=username, password=hashedPassword, role=role)
 
-    db.session.add(newUser)
-    db.session.commit()
+    #This calls the service for create user
+    newUser = UserService.create_user(username, password, role)
     #using the redirect here acts as a dummy 'refresh' though I think it is better to use Jsonify and JS to handle that.
     #also used in other admin functions
     return redirect(url_for('admin_dashboard'))
@@ -142,7 +129,9 @@ def lifecoach_dashboard():
 @app.route('/user/dashboard')
 def user_dashboard():
     userid = session.get('userid') #retrive userid from session; id of the logged in user
-    habits = Habits.query.filter_by(user_id=userid).all() #get habits and print
+
+    habits = HabitService.list_habits(userid)
+
     #load UserDashboard.html with habits
     return render_template('UserDashboard.html', habits=habits)
 
@@ -155,26 +144,21 @@ def addHabit():
         userid = session.get('userid') 
 
         if userid:
-            existingHabit = Habits.query.filter_by(user_id=userid, habit_description=description).first()
-            if existingHabit is None:
-                newHabit = Habits(user_id=userid, habit_description=description)
-                db.session.add(newHabit)
-                db.session.commit()
-                return jsonify({'success': True, 'habit_id': newHabit.habit_id})  # Return success response
+            success, response = HabitService.add_habit(userid, description)
+            if success:
+                return jsonify({'success': True, 'habit_id': response})
             else:
-                return jsonify({'success': False, 'message': 'This habit already exists'})  # Return error response
+                return jsonify({'success': False, 'message': response})
         else:
-            return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})  # Return error response
-        
+            return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})
                 
 @app.route('/checkbox', methods=['POST'])
 def checkBox():
     habit_id = request.form.get('habit_id')
     completed = request.form.get('completed')=='True'
-    habit = Habits.query.get(habit_id)
+    habit = HabitService.get_habit(habit_id)
     if habit:
-        habit.is_completed = completed
-        db.session.commit()
+        HabitService.mark_completed(habit, completed)
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
@@ -183,10 +167,10 @@ def checkBox():
 def editHabit():
     habit_id = request.form.get('habit_id')
     new_description = request.form.get('new_description')
-    habit = Habits.query.get(habit_id)
-    if habit:
-        habit.habit_description = new_description
-        db.session.commit()
+
+    success = HabitService.edit_habit(habit_id, new_description)
+    
+    if success:
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
@@ -194,11 +178,10 @@ def editHabit():
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
-    habit = Habits.query.get(habit_id)
-    print("habit id: ", habit_id)
-    if habit:
-        db.session.delete(habit)
-        db.session.commit()
+
+    success = HabitService.delete_habit(habit_id)
+    
+    if success:
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
