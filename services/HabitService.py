@@ -1,5 +1,6 @@
 from models import Habits
 from app import db
+import datetime
 
 class HabitService:
     @staticmethod
@@ -36,11 +37,14 @@ class HabitService:
 
     @staticmethod
     def add_habit(user_id, description):
+        current_date = datetime.date.today()
+
         existing_habit = Habits.query.filter_by(user_id=user_id, habit_description=description).first()
         if existing_habit:
             return False, 'This habit already exists'
-        
-        new_habit = Habits(user_id=user_id, habit_description=description)
+    
+        # Create a new Habits object with the current date
+        new_habit = Habits(user_id=user_id, habit_description=description, date=current_date)
         db.session.add(new_habit)
         db.session.commit()
         return True, new_habit.habit_id
