@@ -182,7 +182,7 @@
             event.preventDefault();
             const form = document.getElementById('editForm');
             const formData = new FormData(form);
-
+            formData.append('date', getCurrentDateString()); // Append the date to the form data
             fetch('/edithabit', {
                 method: 'POST',
                 body: formData

@@ -1,6 +1,7 @@
 from models import Habits
 from app import db
 import datetime
+from flask import request
 
 current_date = datetime.date.today()
 
@@ -43,7 +44,8 @@ class HabitService:
     
     @staticmethod
     def edit_habit(habit_id, new_description):
-        habit = Habits.query.get(habit_id)
+        #date = request.form.get('date')
+        habit = Habits.query.filter_by(habit_id=habit_id, date=current_date).first()
         if habit:
             habit.habit_description = new_description
             db.session.commit()

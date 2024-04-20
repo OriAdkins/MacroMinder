@@ -175,6 +175,7 @@ def editHabit():
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
 
+
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
