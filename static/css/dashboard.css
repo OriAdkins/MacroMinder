@@ -1,3 +1,4 @@
+/* Dashboard Body */
 body {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
     overflow-x: hidden;
@@ -11,6 +12,7 @@ body {
     padding-right: 50px;
 }
 
+/* Header */
 #header-bar {
     background-color: #343a40;
     color: #ffffff;
@@ -24,24 +26,14 @@ body {
     font-weight: bold;
 }
 
-#pieChartBlock {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#pieChartBlock p {
-    margin: 0;
-    color: #000000 !important; 
-}
-
+/* Main Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
+/* Content Rows */
 .tm-content-row {
     display: flex;
     justify-content: center;
@@ -55,6 +47,7 @@ body {
     max-width: 300px;
 }
 
+/* Blocks */
 .bg-white {
     background-color: #ffffff;
     padding: 20px;
@@ -70,34 +63,46 @@ body {
     margin-bottom: 10px;
 }
 
-/*new code added by Ryan, keeps the "Add Habit" button on the bottom left*/
-/*also makes the text that displays the habits black*/
-.tm-block {
-    position: relative; /* Make sure the parent is positioned */
-}
-
+/* Habit Button */
 .habit-button {
-    position: absolute; /* Position the button absolutely within the .tm-block */
-    bottom: 10px; /* Distance from the bottom of the parent */
-    left: 10px; /* Distance from the left of the parent */
-    padding: 5px 10px; /* Optional: Adjust padding */
-    /* Add more styling here as needed */
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 5px 10px;
 }
 
 .habit-description {
     color: black;
 }
-/*absolute position, margins of 10*/
+
+/* Logout Button */
 .logout-button {
     position: absolute;
     top: 10px;
     right: 10px;
 }
-/* set user list to black, html defaulting to white???? */
-.user-row {
+
+/* Adjust text color */
+#macros label {
     color: black;
 }
 
+/* Adjust input width */
+#macros input[type="number"] {
+    width: 80px;
+}
+
+/* Adjust button */
+#macros button {
+    margin-top: 10px;
+}
+
+#macros .macros-container {
+    margin-bottom: 20px;
+}
+
+
+/* Habit Header */
 #habits-header {
     display: flex;
     align-items: center;

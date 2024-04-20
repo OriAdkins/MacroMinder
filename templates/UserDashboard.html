@@ -25,6 +25,21 @@
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Macro Tracker</h2>
+                        <!-- Macro input section -->
+                        <div id="macros">
+                            <form id="macrosForm" onsubmit="logMacros(event)">
+                                <label for="proteinInput">Protein (grams):</label>
+                                <input type="number" id="proteinInput" name="proteinInput" required>
+                                <br> <!-- New line -->
+                                <label for="caloriesInput">Calories:</label>
+                                <input type="number" id="caloriesInput" name="caloriesInput" required>
+                                <br> <!-- New line -->
+                                <label for="weightInput">Current Weight (lbs):</label>
+                                <input type="number" id="weightInput" name="weightInput" required>
+                                <br> <!-- New line -->
+                                <button type="submit" class="btn btn-primary">Log Macros</button>
+                            </form>
+                        </div>
                         <canvas id="lineChart"></canvas>
                     </div>
                 </div>
