@@ -2,6 +2,8 @@ from models import Habits
 from app import db
 import datetime
 
+current_date = datetime.date.today()
+
 class HabitService:
     @staticmethod
     def delete_all_user_habits(user_id):
@@ -27,7 +29,7 @@ class HabitService:
     
     @staticmethod
     def get_habit(habit_id):
-        habit = Habits.query.get(habit_id)
+        habit = Habits.query.filter_by(habit_id = habit_id, date=current_date).first()
         return habit
     
     @staticmethod

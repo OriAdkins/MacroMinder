@@ -1,6 +1,11 @@
 from app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import ForeignKey, Column, Integer, String, Boolean, Date
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.schema import PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
+
+Base = declarative_base
 
 class User(db.Model):
     # Replace 'User' with the name of your database table containing these exact things - Ori
@@ -16,9 +21,13 @@ class Habits(db.Model):
     habit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     habit_description = db.Column(db.String(255), nullable=False)
-    user = relationship("User", backref="habits")
     is_completed = db.Column(db.Boolean, default=False, nullable=False)
     date = db.Column(db.Date, nullable = False)
+    user = relationship("User", backref="habits")
+    __table_args__ = (
+        PrimaryKeyConstraint('habit_id', 'date'),
+        {},
+    )
     #user = db.relationship('User', backref='habits')
 
 
