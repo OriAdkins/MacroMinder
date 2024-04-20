@@ -178,13 +178,15 @@ def editHabit():
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
+    date = request.form.get('date')  # Get the date from the form data
 
-    success = HabitService.delete_habit(habit_id)
+    success = HabitService.delete_habit(habit_id, date)
     
     if success:
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
+
     
 @app.route('/lifecoach/viewuserdashboard/<int:user_id>')
 def view_user_dashboard(user_id):

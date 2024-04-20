@@ -62,11 +62,13 @@ class HabitService:
             return False
         
     @staticmethod
-    def delete_habit(habit_id):
-        habit = Habits.query.get(habit_id)
+    def delete_habit(habit_id, date):
+        # Query the habit using both habit_id and date
+        habit = Habits.query.filter_by(habit_id=habit_id, date=date).first()
         if habit:
             db.session.delete(habit)
             db.session.commit()
             return True
         else:
             return False
+
