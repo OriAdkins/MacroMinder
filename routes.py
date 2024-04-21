@@ -213,3 +213,21 @@ def add_macros():
     new_macro = CompletionLogService.add_completion_log(userid, date, protein, calories, 0, weightlbs)
   
     return jsonify({"success": True})
+
+@app.route('/editmacros', methods=['POST'])
+def edit_macros():
+        # Edit macro in the database
+        userid = session.get('userid')
+        data = request.get_json()
+        macro_id = data['macro_id']
+        protein = data['protein']
+        calories = data['calories']
+        weightlbs = data['weightlbs']
+        date = data['date']
+
+        success = CompletionLogService.edit_completion_log(macro_id, userid, date, protein, calories, 0, weightlbs)
+      
+        if success:
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False, "message": "Macro not found"})
