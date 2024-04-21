@@ -22,3 +22,30 @@ class CompletionLogService:
         db.session.add(new_log)
         db.session.commit()
         return new_log.tracking_id
+    
+    @staticmethod
+    def edit_completion_log(log_id, protein=None, calories=None, tasks_completed=None, weightlbs=None):
+        log = CompletionLog.query.get(log_id)
+        if log:
+            if protein is not None:
+                log.protein = protein
+            if calories is not None:
+                log.calories = calories
+            if tasks_completed is not None:
+                log.tasks_completed = tasks_completed
+            if weightlbs is not None:
+                log.weightlbs = weightlbs
+            db.session.commit()
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def delete_completion_log(log_id):
+        log = CompletionLog.query.get(log_id)
+        if log:
+            db.session.delete(log)
+            db.session.commit()
+            return True
+        else:
+            return False
