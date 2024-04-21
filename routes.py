@@ -199,3 +199,17 @@ def view_user_dashboard(user_id):
     habits = HabitService.list_habits(user_id)
 
     return render_template('ViewUserDashboard.html', user=user, user_username=user_username, habits=habits)
+
+@app.route('/addmacros', methods=['POST'])
+def add_macros():
+    # Add macro to the database
+    userid = session.get('userid')
+    data = request.get_json()
+    protein = data['protein']
+    calories = data['calories']
+    weightlbs = data['weightlbs']
+    date = data['date']
+
+    new_macro = CompletionLogService.add_completion_log(userid, date, protein, calories, 0, weightlbs)
+  
+    return jsonify({"success": True})
