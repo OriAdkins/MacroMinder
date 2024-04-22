@@ -1,7 +1,11 @@
 from flask import render_template, request, flash, session, redirect, url_for, jsonify
 from app import app, db, bcrypt
 from models import User, Habits, CompletionLog
-from services.UserService import UserService, HabitService, CompletionLogService
+from services.UserService import UserService
+from services.HabitService import HabitService
+from services.CompletionLogService import CompletionLogService
+from services.TimeService import TimeService
+from datetime import date, datetime
 
 # Render login page
 
@@ -18,6 +22,18 @@ def login():
             #store the user id in current session
             session['userid'] = existingUser.id 
             session['role'] = existingUser.role
+            session['current_date'] = date.today()
+
+            # get.session.id check the user!
+            # check time session['current_date'] = datetime.date.today()
+            # call HabitService function that takes the userid and date
+            # checkforexistinghabits(userid, date)
+            # query db for prev day, add them to today (or call a function that does)
+            # that would be added to the list of habits today which is already called by list_habits()
+
+
+
+
             #Check user role and redirect accordingly
             #print("User role:", existingUser.role)  # Debug print to check the user's role
             if existingUser.role == 'Admin':
@@ -129,8 +145,24 @@ def lifecoach_dashboard():
 @app.route('/user/dashboard')
 def user_dashboard():
     userid = session.get('userid') #retrive userid from session; id of the logged in user
+    session_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(session_date)
 
-    habits = HabitService.list_habits(userid)
+    
+    print("Type of session_date:", type(session_date))
+    # formatted_date = current_date.strftime('%Y-%m-%d')
+    # Handle case to copy habits over from previous date to current
+    # (1) check current date, check for habits on day before. 
+    # copy them over in habit service. 
+
+    #current_date = datetime.date.today()
+
+    #HabitService.get_habits_from_prev_days(userid, date)
+
+    #LETS GOOOOOOO THIS WORKS
+    #current_date = date(2024, 4, 22)
+
+    habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
     return render_template('UserDashboard.html', habits=habits)
@@ -142,9 +174,11 @@ def addHabit():
     if request.method == 'POST':
         description = request.form.get('habitdesc')
         userid = session.get('userid') 
+        current_date = session.get('current_date')
+        current_date = TimeService.parse_session_date(current_date)
 
         if userid:
-            success, response = HabitService.add_habit(userid, description)
+            success, response = HabitService.add_habit(userid, description, current_date)
             if success:
                 return jsonify({'success': True, 'habit_id': response})
             else:
@@ -155,6 +189,8 @@ def addHabit():
 @app.route('/checkbox', methods=['POST'])
 def checkBox():
     habit_id = request.form.get('habit_id')
+    current_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(current_date)
     completed = request.form.get('completed')=='True'
     habit = HabitService.get_habit(habit_id)
     if habit:
@@ -179,9 +215,10 @@ def editHabit():
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
-    date = request.form.get('date')  # Get the date from the form data
+    current_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(current_date)
 
-    success = HabitService.delete_habit(habit_id, date)
+    success = HabitService.delete_habit(habit_id, current_date)
     
     if success:
         return jsonify({'success': True})
@@ -225,9 +262,24 @@ def edit_macros():
         weightlbs = data['weightlbs']
         date = data['date']
 
-        success = CompletionLogService.edit_completion_log(macro_id, userid, date, protein, calories, 0, weightlbs)
+        success = CompletionLogService.edit_completion_log(macro_id, protein, calories, 0, weightlbs)
       
         if success:
             return jsonify({"success": True})
         else:
             return jsonify({"success": False, "message": "Macro not found"})
+        
+@app.route('/nextday', methods=['POST'])
+def next_day():
+    TimeService.set_next_date()
+
+@app.route('/prevday', methods=['POST'])
+def prev_day():
+    #implement a block for 1 week ahead
+    TimeService.set_previous_date()
+
+#add two routes for going forward and back a date
+
+#next and prev date button
+#route next prev date button 
+#session[current_date] = next/prev datetimetoday
