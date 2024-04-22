@@ -1,6 +1,4 @@
 from models import CompletionLog
-from models import User
-from flask_login import current_user
 from app import db
 
 class CompletionLogService:
@@ -51,8 +49,3 @@ class CompletionLogService:
             return True
         else:
             return False
-        
-    @staticmethod
-    def fetch_macros_for_current_user(user_id):
-        macros = CompletionLog.query.filter_by(user_id=user_id).all()
-        return macros
