@@ -50,3 +50,7 @@ class UserService:
     def list_users():
         users = User.query.all()
         return users
+    
+    @staticmethod
+    def get_life_coaches():
+        return User.query.filter_by(role='LifeCoach').all()

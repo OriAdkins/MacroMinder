@@ -122,6 +122,19 @@ body {
     cursor: pointer;
 }
 
+.life-coach-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tm-life-coach-block {
+    width: 150px; /* Adjust height and width*/
+    height: 300px;
+    position: absolute; /* Set the position to absolute */
+    top: 200px; /* Adjust the top position to move the box upwards */
+    right: 120px; /* Adjust the right position to move the box to the right */
+}
+
 #currentDate {
     color: black;
     font-size: 15px;

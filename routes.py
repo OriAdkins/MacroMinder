@@ -7,6 +7,7 @@ from services.CompletionLogService import CompletionLogService
 from services.TimeService import TimeService
 from datetime import date, datetime
 
+
 # Render login page
 
 # Login route
@@ -151,6 +152,9 @@ def user_dashboard():
     current_date = TimeService.parse_session_date(session_date)
     #current_date_iso = current_date.isoformat()
     
+
+    life_coaches = UserService.get_life_coaches()
+    print("Life Coaches:", life_coaches)  # Add this line to print the life coaches variable
     print("Type of session_date:", type(session_date))
     print("Type of session_date:", type(current_date))
     # formatted_date = current_date.strftime('%Y-%m-%d')
@@ -168,7 +172,7 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches)
 
 
 #route to render the addhabit page or add a habit
