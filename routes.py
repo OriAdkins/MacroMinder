@@ -149,7 +149,7 @@ def user_dashboard():
     username = session.get('username')
     session_date = session.get('current_date')
     current_date = TimeService.parse_session_date(session_date)
-    current_date_iso = current_date.isoformat()
+    #current_date_iso = current_date.isoformat()
     
     print("Type of session_date:", type(session_date))
     print("Type of session_date:", type(current_date))
@@ -168,7 +168,7 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits, current_date=current_date_iso, username=username)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username)
 
 
 #route to render the addhabit page or add a habit
