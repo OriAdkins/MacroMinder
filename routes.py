@@ -20,6 +20,7 @@ def login():
 
         if existingUser and bcrypt.check_password_hash(existingUser.password, password):
             #store the user id in current session
+            session['username'] = existingUser.username
             session['userid'] = existingUser.id 
             session['role'] = existingUser.role
             session['current_date'] = date.today()
@@ -145,9 +146,10 @@ def lifecoach_dashboard():
 @app.route('/user/dashboard')
 def user_dashboard():
     userid = session.get('userid') #retrive userid from session; id of the logged in user
+    username = session.get('username')
     session_date = session.get('current_date')
     current_date = TimeService.parse_session_date(session_date)
-
+    current_date_iso = current_date.isoformat()
     
     print("Type of session_date:", type(session_date))
     print("Type of session_date:", type(current_date))
@@ -166,7 +168,7 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date_iso, username=username)
 
 
 #route to render the addhabit page or add a habit

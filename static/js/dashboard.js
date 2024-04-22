@@ -1,9 +1,9 @@
-let currentDate = new Date();
+//let currentDate = new Date("{{ current_date }}");
 
 window.onload = function () {
-    document.getElementById('currentDate').textContent = formatDate(currentDate);
+    //updateDateDisplay(currentDate);
+    //document.getElementById('currentDate').textContent = formatDate(currentDate);
     //fetchHabitsForDate(currentDate);
-    updateDateDisplay(currentDate);
 }
 
 // Function to format date
@@ -173,8 +173,8 @@ function updateDateDisplay(date) {
 function previousDate() {
     // Send POST request to /prevday endpoint
 
-    currentDate.setDate(currentDate.getDate() - 1);
-    updateDateDisplay(currentDate);
+    //currentDate.setDate(currentDate.getDate() - 1);
+    //updateDateDisplay(currentDate);
 
     fetch('/prevday', {
         method: 'POST',
@@ -197,8 +197,8 @@ function previousDate() {
 function nextDate() {
     // Send POST request to /nextday endpoint
 
-    currentDate.setDate(currentDate.getDate() + 1);
-    updateDateDisplay(currentDate);
+    //currentDate.setDate(currentDate.getDate() + 1);
+    //updateDateDisplay(currentDate);
 
     fetch('/nextday', {
         method: 'POST',
