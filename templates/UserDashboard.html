@@ -99,7 +99,12 @@
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Welcome, {{ username }}!</h2>
-                    </div>
+                        {% if connected_coach %}
+                            <li style="color: black;"><p>Your coach is {{ connected_coach.username }}</p>
+                        {% else %}
+                            <li style="color: black;"><p>You have no coach</p>
+                        {% endif %}
+                    </div>                    
                     <div class="tm-col tm-col-big">
                         <div class="bg-white tm-block h-100">
                             <h2 class="tm-block-title">Life Coach Lookup</h2>

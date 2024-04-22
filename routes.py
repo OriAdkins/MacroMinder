@@ -1,6 +1,6 @@
 from flask import render_template, request, flash, session, redirect, url_for, jsonify
 from app import app, db, bcrypt
-from models import User, Habits, CompletionLog
+from models import User, Habits, CompletionLog, CoachingGroups
 from services.UserService import UserService
 from services.HabitService import HabitService
 from services.CompletionLogService import CompletionLogService
@@ -163,6 +163,14 @@ def user_dashboard():
     
 
     life_coaches = UserService.get_life_coaches()
+    connected_coach = None
+    for coach in life_coaches:
+        coaching_group = CoachingGroups.query.filter_by(user_id=userid, life_coach_id=coach.id).first()
+        if coaching_group:
+            connected_coach = coach
+            break
+
+    print("Connected Coach:", connected_coach)  # Add this line to print the connected coach variable
     print("Life Coaches:", life_coaches)  # Add this line to print the life coaches variable
     print("Type of session_date:", type(session_date))
     print("Type of session_date:", type(current_date))
@@ -204,7 +212,7 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, graph_html=graph_html)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, connected_coach=connected_coach, graph_html=graph_html)
 
 
 @app.route('/set_coach/<int:life_coach_id>', methods=['POST'])
@@ -216,7 +224,6 @@ def set_coach(life_coach_id):
 
     # Call the UserService method to link the user_id and coach_id in the CoachingGroups table
     success = UserService.link_user_and_coach(user_id, life_coach_id)
-
     if success:
         flash('Coach added successfully')
     else:
