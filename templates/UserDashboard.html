@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Copperplate+Gothic&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="dashboard.css">
+
 </head>
 <body id="reportsPage">
     <div id="header-bar">
         <h1>Macrominder</h1>
+    </div>
+    <div id="tm-col tm-col-big" style="text-align: center;">
+        <button onclick="previousDate()">◀</button>
+        <span id="currentDate" style="display: inline-block;">{{ current_date }}</span>
+        <button onclick="nextDate()">▶</button>
     </div>
     <!--logout button-->
     <div class="logout-button">
@@ -42,17 +49,16 @@
                         </div>
                         <canvas id="lineChart"></canvas>
                     </div>
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Plotly Graph for macros here.</h2>
+                    </div>
                 </div>
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--------------------------- HABITS --------------------------->
                         <!--display the habit descriptions of the habits passed in-->
-                        <div id="habits-header">
-                            <button onclick="previousDate()">◀</button>
-                            <span id="currentDate">{{ current_date }}</span>
-                            <button onclick="nextDate()">▶</button>
-                        </div>
+
                         <div class="habit-list">
                             {% for habit in habits %}
                                 <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
@@ -81,6 +87,13 @@
                             <input type="text" id="habitdesc" name="habitdesc" required>
                             <button type="submit" class="btn btn-primary">Add Habit</button>
                         </form>
+                    </div>
+                    <div>
+                        <div class="tm-col tm-col-big">
+                            <div class="bg-white tm-block h-100">
+                                {{ graph_html | safe }}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="tm-col tm-col-big">

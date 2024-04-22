@@ -1,9 +1,9 @@
-/* Dashboard Body */
+/* Dashboard Body old color #302c64 */
 body {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
     overflow-x: hidden;
     color: #ffffff;
-    background-color: #302c64;
+    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -14,16 +14,18 @@ body {
 
 /* Header */
 #header-bar {
-    background-color: #343a40;
+    /*background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);;*/
     color: #ffffff;
     padding: 10px 0;
     text-align: center;
+    background: none;
 }
 
 #header-bar h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 40px;
     font-weight: bold;
+    font-family: 'Copperplate Gothic', sans-serif;
 }
 
 /* Main Container */
@@ -49,10 +51,11 @@ body {
 
 /* Blocks */
 .bg-white {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.8);;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8);
+    border: 1.5px solid black;
 }
 
 .tm-block-title {
@@ -136,7 +139,7 @@ body {
 }
 
 #currentDate {
-    color: black;
-    font-size: 15px;
+    color: white;
+    font-size: 18px;
     margin: 0 15px;
 }

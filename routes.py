@@ -6,6 +6,15 @@ from services.HabitService import HabitService
 from services.CompletionLogService import CompletionLogService
 from services.TimeService import TimeService
 from datetime import date, datetime
+import pandas as pd
+import plotly.graph_objects as go
+
+
+habit_data = {
+    'habit_id': [1],
+    'habit_description': ['Exercise'],
+    'is_completed': [True]
+}
 
 
 # Render login page
@@ -162,6 +171,29 @@ def user_dashboard():
     # (1) check current date, check for habits on day before. 
     # copy them over in habit service. 
 
+    # pull data for graph from HabitService
+    total_habits = HabitService.count_total_habits(current_date)
+    completed_habits = HabitService.count_completed_habits(current_date)
+    # create graph, much like HW3 EC
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=['Completed Habits'],
+        y=[completed_habits],
+        name='Completed',
+        marker_color='rgb(55, 83, 109)'
+    ))
+
+    #make the graph layout -> y axis is our total habits for the day
+    fig.update_layout(
+        title='Habit Progress',
+        xaxis=dict(title=''),
+        yaxis=dict(title='Total Habits for Today', range=[0, total_habits])
+    )
+
+    # make the graph html so we use JINJA to put it in the dashboard
+    # I read that using Dash ? helps create more dynamic graphs here.
+    graph_html = fig.to_html(full_html=False)
+
     #current_date = datetime.date.today()
 
     #HabitService.get_habits_from_prev_days(userid, date)
@@ -172,7 +204,7 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, graph_html=graph_html)
 
 
 #route to render the addhabit page or add a habit

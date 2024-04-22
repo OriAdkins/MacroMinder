@@ -23,6 +23,15 @@ class HabitService:
         #for i in prev_habit_list:
             #call add_habit()???
 
+    @staticmethod
+    def count_total_habits(current_date):
+        total_habit_count = Habits.query.filter_by(date=current_date).count()
+        return total_habit_count
+    
+    @staticmethod
+    def count_completed_habits(current_date):
+        completed_habits_count = Habits.query.filter_by(date=current_date, is_completed=True).count()
+        return completed_habits_count
 
     @staticmethod
     def list_habits(user_id, current_date): #change to take in date???
