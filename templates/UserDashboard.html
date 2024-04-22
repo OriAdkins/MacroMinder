@@ -87,14 +87,8 @@
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Welcome, {{ username }}!</h2>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="container life-coach-container">
-                <div class="row tm-content-row tm-mt-big justify-content-end">
                     <div class="tm-col tm-col-big">
-                        <div class="bg-white tm-block tm-life-coach-block h-100">
+                        <div class="bg-white tm-block h-100">
                             <h2 class="tm-block-title">Life Coach Lookup</h2>
                             <ul>
                                 {% for user in life_coaches %}
@@ -103,9 +97,10 @@
                         </div>
                     </div>
                 </div>
-            </div>                                             
+            </div>
         </div>
     </div>
+    
 
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
     
