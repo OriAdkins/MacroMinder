@@ -150,6 +150,7 @@ def user_dashboard():
 
     
     print("Type of session_date:", type(session_date))
+    print("Type of session_date:", type(current_date))
     # formatted_date = current_date.strftime('%Y-%m-%d')
     # Handle case to copy habits over from previous date to current
     # (1) check current date, check for habits on day before. 
@@ -272,11 +273,13 @@ def edit_macros():
 @app.route('/nextday', methods=['POST'])
 def next_day():
     TimeService.set_next_date()
+    return jsonify({'success': True})
 
 @app.route('/prevday', methods=['POST'])
 def prev_day():
-    #implement a block for 1 week ahead
     TimeService.set_previous_date()
+    return jsonify({'success': True})
+
 
 #add two routes for going forward and back a date
 

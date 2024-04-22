@@ -1,8 +1,9 @@
-const currentDate = new Date();
+let currentDate = new Date();
 
 window.onload = function () {
     document.getElementById('currentDate').textContent = formatDate(currentDate);
-    fetchHabitsForDate(currentDate);
+    //fetchHabitsForDate(currentDate);
+    updateDateDisplay(currentDate);
 }
 
 // Function to format date
@@ -160,26 +161,67 @@ function getCurrentDateString() {
 }
 
 // Function to navigate to previous date
+//function previousDate() {
+ //   currentDate.setDate(currentDate.getDate() - 1);
+   // updateDate();
+//}
+
+function updateDateDisplay(date) {
+    document.getElementById("currentDate").textContent = formatDate(date);
+}
+
 function previousDate() {
+    // Send POST request to /prevday endpoint
+
     currentDate.setDate(currentDate.getDate() - 1);
-    updateDate();
+    updateDateDisplay(currentDate);
+
+    fetch('/prevday', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => {
+        if (response.ok) {
+            // Reload the page or update the content as needed
+            location.reload(); // Reload the page to reflect the updated date
+        } else {
+            console.error('Failed to set previous day');
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
 }
 
-// Function to navigate to next date
 function nextDate() {
+    // Send POST request to /nextday endpoint
+
     currentDate.setDate(currentDate.getDate() + 1);
-    updateDate();
+    updateDateDisplay(currentDate);
+
+    fetch('/nextday', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => {
+        if (response.ok) {
+            // Reload the page or update the content as needed
+            location.reload(); // Reload the page to reflect the updated date
+        } else {
+            console.error('Failed to set next day');
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
 }
 
-// Function to update the date and habits for the selected date
-function updateDate() {
-    document.getElementById('currentDate').textContent = formatDate(currentDate);
-    fetchHabitsForDate(currentDate);
-}
 
 // Get today's date for the habit tracker
-let today = new Date().toISOString().substr(0, 10);
-document.getElementById("currentDate").innerText = today;
+//let today = new Date().toISOString().substr(0, 10);
+//document.getElementById("currentDate").innerText = today;
 
 // Function to fetch macros for a specific date
 async function fetchMacrosForDate(date) {
