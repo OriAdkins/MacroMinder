@@ -246,9 +246,10 @@ def add_macros():
     protein = data['protein']
     calories = data['calories']
     weightlbs = data['weightlbs']
-    date = data['date']
+    current_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(current_date)
 
-    new_macro = CompletionLogService.add_completion_log(userid, date, protein, calories, 0, weightlbs)
+    new_macro = CompletionLogService.add_completion_log(userid, current_date, protein, calories, 0, weightlbs)
   
     return jsonify({"success": True})
 

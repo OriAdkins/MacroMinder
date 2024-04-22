@@ -11,19 +11,35 @@ class CompletionLogService:
             db.session.delete(log)
         db.session.commit()
 
+
+    # Instead of having an edit button, we 'limit' the user to one log per day by checking against 
+    # the date stored in the db 
     @staticmethod
     def add_completion_log(user_id, date, protein=0, calories=0, tasks_completed=0, weightlbs=150):
-        new_log = CompletionLog(
-            user_id=user_id,
-            date=date,
-            protein=protein,
-            calories=calories,
-            tasks_completed=tasks_completed,
-            weightlbs=weightlbs
-        )
-        db.session.add(new_log)
+        # Check if there is already a log for the given user and date
+        existing_log = CompletionLog.query.filter_by(user_id=user_id, date=date).first()
+
+        if existing_log:
+            # Update the existing log
+            existing_log.protein = protein
+            existing_log.calories = calories
+            existing_log.tasks_completed = tasks_completed
+            existing_log.weightlbs = weightlbs
+        else:
+            # Create a new log
+            new_log = CompletionLog(
+                user_id=user_id,
+                date=date,
+                protein=protein,
+                calories=calories,
+                tasks_completed=tasks_completed,
+                weightlbs=weightlbs
+            )
+            db.session.add(new_log)
+
         db.session.commit()
-        return new_log.tracking_id
+        return existing_log.tracking_id if existing_log else new_log.tracking_id
+
     
     @staticmethod
     def edit_completion_log(log_id, protein=None, calories=None, tasks_completed=None, weightlbs=None):
