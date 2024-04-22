@@ -12,6 +12,14 @@ body {
     padding-right: 50px;
 }
 
+h1 {
+
+    text-shadow: -2px -2px 0 #000,  
+                  2px -2px 0 #000,
+                 -2px  2px 0 #000,
+                  2px  2px 0 #000;
+}
+
 /* Header */
 #header-bar {
     /*background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);;*/
@@ -53,7 +61,7 @@ body {
 .bg-white {
     background-color: rgba(255, 255, 255, 0.8);;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 20px;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8);
     border: 1.5px solid black;
     margin-bottom: 10px; 

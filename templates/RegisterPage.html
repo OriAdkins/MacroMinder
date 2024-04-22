@@ -12,18 +12,18 @@
         <h1>Welcome to MacroMinder!</h1>
         <input type="checkbox" id="chk" aria-hidden="true">
         <div class="signup">
-            <form action="/register" method="post">
+            <form action="/register" method="post" class="signup">
                 <label for="chk" aria-hidden="true">Register</label>
                 <input type="text" name="username" placeholder="Username" required="">
                 <input type="password" name="password" placeholder="Password" required="">
                 <label for="role">Role:</label>
-                <select name="role" required>
+                <select name="role" required="">
                     <option value="User">User</option>
                     <option value="LifeCoach">Life Coach</option>
                     <option value="Admin" selected>Admin</option>
                 </select>
                 <button type="submit">Register</button>
-            </form>
+            </form>  
             <a href="/">Back to Login</a>
         </div>
     </div>

@@ -43,6 +43,10 @@ h1 {
     text-align: center;
     color: #fff;
     margin-top: 20px;
+    text-shadow: -1px -1px 0 #000,  
+                  1px -1px 0 #000,
+                 -1px  1px 0 #000,
+                  1px  1px 0 #000;
 }
 
 label {
@@ -54,6 +58,10 @@ label {
     font-weight: bold;
     cursor: pointer;
     transition: .5s ease-in-out;
+    text-shadow: -1px -1px 0 #000,  
+                  1px -1px 0 #000,
+                 -1px  1px 0 #000,
+                  1px  1px 0 #000;
 }
 
 input,
@@ -67,7 +75,7 @@ select {
     padding: 10px;
     border: none;
     outline: none;
-    border-radius: 5px;
+    border-radius: 15px;
 }
 
 button {
@@ -83,7 +91,7 @@ button {
     margin-top: 20px;
     outline: none;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     transition: .2s ease-in;
     cursor: pointer;
 }
@@ -121,10 +129,14 @@ button:hover {
     transform: scale(.6);
 }
 
-/* Center and style the Register link */
+/* REGISTER PAGE */
 .signup a {
-    color: #fff; /* Change text color to white */
-    text-align: center; /* Center the text */
-    display: block; /* Make the link a block element */
-    margin-top: 20px; /* Add some top margin for spacing */
+    color: #fff; 
+    text-align: center; 
+    display: block; 
+    margin-top: 20px; 
+}
+
+.signup select[name="role"] option:checked {
+    color: black; /* Change text color to black */
 }
