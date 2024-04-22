@@ -207,6 +207,23 @@ def user_dashboard():
     return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, graph_html=graph_html)
 
 
+@app.route('/set_coach/<int:life_coach_id>', methods=['POST'])
+def set_coach(life_coach_id):
+    print("Set coach route triggered")
+    if session.get('role') != 'User':
+        return redirect(url_for('login'))
+    user_id = session.get('userid')  # Get the user's ID from the session
+
+    # Call the UserService method to link the user_id and coach_id in the CoachingGroups table
+    success = UserService.link_user_and_coach(user_id, life_coach_id)
+
+    if success:
+        flash('Coach added successfully')
+    else:
+        flash('Failed to add coach')
+
+    return redirect(url_for('user_dashboard'))
+
 #route to render the addhabit page or add a habit
 @app.route('/addhabit', methods=['POST','GET'])
 def addHabit():

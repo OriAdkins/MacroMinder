@@ -104,8 +104,14 @@
                         <div class="bg-white tm-block h-100">
                             <h2 class="tm-block-title">Life Coach Lookup</h2>
                             <ul>
-                                {% for user in life_coaches %}
-                                    <li style="color: black;">{{ user.username }}</li>                                {% endfor %}
+                                {% for coach in life_coaches %}
+                                <li>
+                                    <span><li style="color: black;">{{ coach.username }}</li></span>
+                                    <form action="/set_coach/{{ coach.id }}" method="POST">
+                                        <button type="submit" class="btn btn-primary">Set as Coach</button>
+                                    </form>
+                                </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

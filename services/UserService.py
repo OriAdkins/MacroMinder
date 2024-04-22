@@ -1,4 +1,4 @@
-from models import User
+from models import User, CoachingGroups
 from app import db, bcrypt
 from services.HabitService import HabitService
 from services.CompletionLogService import CompletionLogService
@@ -54,3 +54,23 @@ class UserService:
     @staticmethod
     def get_life_coaches():
         return User.query.filter_by(role='LifeCoach').all()
+    
+    @staticmethod
+    def link_user_and_coach(user_id, life_coach_id):
+        try:
+            # Check if the user is already linked to a coach
+            existing_link = CoachingGroups.query.filter_by(user_id=user_id).first()
+            if existing_link:
+                # If a link already exists, update the coach_id
+                existing_link.life_coach_id = life_coach_id
+            else:
+                # If no link exists, create a new entry in the CoachingGroups table
+                new_link = CoachingGroups(user_id=user_id, life_coach_id=life_coach_id)
+                db.session.add(new_link)
+
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return False
