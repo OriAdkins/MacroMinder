@@ -77,6 +77,7 @@ function checkBox(event, form) {
         .then(data => {
             if (data.success) {
                 console.log('Habit completion logged');
+                location.reload()
             } else {
                 alert('Failed to log habit completion');
             }
