@@ -5,15 +5,29 @@ MacroMinder - A Web App to track your macros and habits through the week!
 
 ## File Listing
 ```
+├── templates/
+│ └── AdminDashboard.html
+│ └── LifecoachDashboard.html
+│ └── LoginPage.html
+│ └── RegisterPage.html
+│ └── UserDashboard.html
+│ └── ViewUserDashboard.html
+├── services/
+│ └── CompletionLogService.py
+│ └── HabitService.py
+│ └── TimeService.py
+│ └── UserService.py
+├── static/
+│ └── css/
+│     └── dashboard.css
+│     └── LoginPage.css
+│ └── js/
+│     └── dashboard.js
+│     └── script.js
 ├── app.py
 ├── models.py
 ├── routes.py
 ├── readme.md
-├── templates/
-│ └── index.html
-│ └── LoginPage.html
-│ └── RegisterPage.html
-│ └── HomePage.html
 ```
 
 ## How to Run
@@ -22,7 +36,7 @@ First Steps\
   Pull up the project in a terminal\
   Navigate into the server folder\
   Install dependencies (Check dependencies section) using
-  - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools Flask-Security-Too```
+  - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools numpy plotly pandas```
   type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000
 
 ### If you are having errors, here are some commands that might help - Ori
