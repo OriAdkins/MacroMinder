@@ -325,7 +325,7 @@ def view_user(user_id):
     macros_html = GraphService.generate_weight_over_time_graph(user_id)
 
     # Render the UserView.html template with the user's information
-    return render_template('UserView.html', user=user, habits=habits, current_date=current_date, user_username=user_username, graph_html=graph_html, macros_html=macros_html)
+    return render_template('UserView.html', user=user, user_id=user_id, habits=habits, current_date=current_date, user_username=user_username, graph_html=graph_html, macros_html=macros_html)
 
 
 @app.route('/lifecoach/viewuserdashboard/<int:user_id>')
