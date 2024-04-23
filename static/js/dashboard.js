@@ -267,6 +267,7 @@ async function logMacros(event) {
     const result = await response.json();
     if (result.success) {
         console.log('Macros logged');
+        location.reload()
     } else {
         alert('Failed to log macros');
     }
@@ -303,6 +304,7 @@ async function lifecoachLogMacros(event) {
     const result = await response.json();
     if (result.success) {
         console.log('Macros logged');
+        location.reload()
     } else {
         alert('Failed to log macros');
     }

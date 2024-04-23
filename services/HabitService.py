@@ -24,13 +24,13 @@ class HabitService:
             #call add_habit()???
 
     @staticmethod
-    def count_total_habits(current_date):
-        total_habit_count = Habits.query.filter_by(date=current_date).count()
+    def count_total_habits_for_user(current_date, user_id):
+        total_habit_count = Habits.query.filter_by(date=current_date, user_id=user_id).count()
         return total_habit_count
     
     @staticmethod
-    def count_completed_habits(current_date):
-        completed_habits_count = Habits.query.filter_by(date=current_date, is_completed=True).count()
+    def count_completed_habits_for_user(current_date, user_id):
+        completed_habits_count = Habits.query.filter_by(date=current_date, is_completed=True, user_id=user_id).count()
         return completed_habits_count
 
     @staticmethod

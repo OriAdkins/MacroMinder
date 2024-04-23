@@ -171,8 +171,8 @@ def user_dashboard():
     # copy them over in habit service. 
 
     # pull data for graph from HabitService
-    total_habits = HabitService.count_total_habits(current_date)
-    completed_habits = HabitService.count_completed_habits(current_date)
+    total_habits = HabitService.count_total_habits_for_user(current_date, userid)
+    completed_habits = HabitService.count_completed_habits_for_user(current_date, userid)
     # create graph, much like HW3 EC
     fig = go.Figure()
     fig.add_trace(go.Bar(
