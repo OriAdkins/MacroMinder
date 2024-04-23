@@ -106,6 +106,8 @@ def delete_user(user_id):
     HabitService.delete_all_user_habits(user_id)
     
     CompletionLogService.delete_all_user_completion_logs(user_id)
+
+    CoachingService.delete_link(user_id)
     
     success = UserService.delete_user(user_id)
     
