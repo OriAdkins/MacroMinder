@@ -274,6 +274,44 @@ async function logMacros(event) {
     updateDate();
 }
 
+// Function to log macros
+async function lifecoachLogMacros(event) {
+    event.preventDefault();
+
+    const protein = document.getElementById('proteinInput').value;
+    const calories = document.getElementById('caloriesInput').value;
+    const weightlbs = document.getElementById('weightInput').value;
+
+    const user_id = document.getElementById('user_id').value; // Get user_id from hidden input
+
+    const data = {
+        user_id: user_id, // Include user_id in the data
+        protein: protein,
+        calories: calories,
+        weightlbs: weightlbs,
+        date: getCurrentDateString()
+    };
+
+    const response = await fetch('/coach/logmacros', { // Use the new endpoint for coaches
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        console.log('Macros logged');
+    } else {
+        alert('Failed to log macros');
+    }
+
+    updateDate();
+}
+
+
+
 // Function to show edit macros popup
 function showEditMacrosPopup(macroId, currentProtein, currentCalories, currentWeight) {
     document.getElementById('editMacroId').value = macroId;

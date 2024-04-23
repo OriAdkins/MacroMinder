@@ -34,16 +34,20 @@
                         <h2 class="tm-block-title">Macro Tracker</h2>
                         <!--------------------------- MACROS --------------------------->
                         <div id="macros">
-                            <form id="macrosForm" onsubmit="logMacros(event)">
+                            <form id="macrosForm" onsubmit="lifecoachLogMacros(event)">
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
+                
+                                <!-- Existing input fields for macros -->
                                 <label for="proteinInput">Protein (grams):</label>
                                 <input type="number" id="proteinInput" name="proteinInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <label for="caloriesInput">Calories:</label>
                                 <input type="number" id="caloriesInput" name="caloriesInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <label for="weightInput">Current Weight (lbs):</label>
                                 <input type="number" id="weightInput" name="weightInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <button type="submit" class="btn btn-primary">Log Macros</button>
                             </form>
                         </div>

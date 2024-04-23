@@ -363,6 +363,24 @@ def add_macros():
   
     return jsonify({"success": True})
 
+@app.route('/coach/logmacros', methods=['POST'])
+def coach_log_macros():
+    # Get user_id from the request
+    user_id = request.json.get('user_id')
+
+    # Add macro to the database
+    data = request.get_json()
+    protein = data['protein']
+    calories = data['calories']
+    weightlbs = data['weightlbs']
+    current_date = TimeService.parse_session_date(data['date'])
+
+    new_macro = CompletionLogService.add_completion_log(user_id, current_date, protein, calories, 0, weightlbs)
+  
+    return jsonify({"success": True})
+
+
+
 @app.route('/editmacros', methods=['POST'])
 def edit_macros():
         # Edit macro in the database
