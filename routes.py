@@ -10,12 +10,6 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-habit_data = {
-    'habit_id': [1],
-    'habit_description': ['Exercise'],
-    'is_completed': [True]
-}
-
 
 # Render login page
 
