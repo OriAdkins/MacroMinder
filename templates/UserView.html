@@ -38,13 +38,13 @@
 
                         <div class="habit-list">
                             {% for habit in habits %}
-                                <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
-                                    <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
-                                    <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
-                                    <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
-                                    <button type="button" onclick="showEditPopup('{{ habit.habit_id }}', '{{ habit.habit_description }}')">Edit</button>
-                                    <button type="button" onclick="deleteHabit('{{ habit.habit_id }}', event)">Delete</button>
-                                </form>
+                            <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
+                                <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
+                                <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
+                                <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
+                                <button type="button" onclick="showEditPopup('{{ habit.habit_id }}', '{{ habit.habit_description }}')">Edit</button>
+                                <button type="button" onclick="deleteHabit('{{ habit.habit_id }}', event)">Delete</button>
+                            </form>
                             {% endfor %}
                         </div>
                         <!--edit popup; initially hidden (display: none) until the edit button is clicked-->
@@ -60,10 +60,11 @@
                         <canvas id="barChart"></canvas>
                         <!--button for adding a habit-->
                         <!--onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file)-->
-                        <form id="add-habit-form" method="POST" onsubmit="addHabit(event)">
+                        <form id="add-habit-form" method="POST" onsubmit="coachAddHabit(event)">
+                            <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
                             <input type="text" id="habitdesc" name="habitdesc" required>
                             <button type="submit" class="btn btn-primary">Add Habit</button>
-                        </form>
+                        </form>                                                
                     </div>
                     <div>
                         <div class="tm-col tm-col-big">

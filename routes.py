@@ -220,6 +220,27 @@ def addHabit():
                 return jsonify({'success': False, 'message': response})
         else:
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})
+
+
+@app.route('/coachAddHabit', methods=['POST'])
+def coachAddHabit():
+    if request.method == 'POST':
+        data = request.json  # Parse JSON data from request
+        description = data.get('habitdesc')
+        user_id = request.json.get('user_id')
+        current_date = session.get('current_date')
+        current_date = TimeService.parse_session_date(current_date)
+
+        if user_id:
+            success, response = HabitService.add_habit(user_id, description, current_date)
+            if success:
+                return jsonify({'success': True, 'habit_id': response})
+            else:
+                return jsonify({'success': False, 'message': response})
+        else:
+            return jsonify({'success': False, 'message': 'User ID not provided.'})
+
+
                 
 @app.route('/checkbox', methods=['POST'])
 def checkBox():

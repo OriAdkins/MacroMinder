@@ -62,6 +62,56 @@ async function addHabit(event) {
     }
 }
 
+async function coachAddHabit(event) {
+    event.preventDefault();
+
+    // Retrieve user_id from hidden input
+    const userId = document.getElementById('user_id').value;
+
+    // Retrieve habit description from input field
+    const habitDescription = document.getElementById('habitdesc').value;
+
+    // Create data object including user_id and habit description
+    const habitData = {
+        user_id: userId,
+        habitdesc: habitDescription
+    };
+
+    // Send POST request with JSON data
+    const response = await fetch('/coachAddHabit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(habitData)
+    });
+
+    // Handle response
+    const result = await response.json();
+    if (result.success) {
+        // Process successful response
+        const habitsList = document.querySelector('.habit-list');
+        const newHabitElement = document.createElement('div');
+        newHabitElement.innerHTML = `<form id="habitForm_${result.habit_id}" onchange="checkBox(event, this)">
+                                        <input type="hidden" name="habit_id" value="${result.habit_id}">
+                                        <input type="checkbox" id="habit_${result.habit_id}" name="completed" value="True">
+                                        <label class="habit-description" for="habit_${result.habit_id}">${habitData.habitdesc}</label>
+                                        <button type="button" onclick="showEditPopup('${result.habit_id}', '${habitData.habitdesc}')">Edit</button>
+                                        <button type="button" onclick="deleteHabit('${result.habit_id}', event)">Delete</button>
+                                    </form>`;
+        habitsList.appendChild(newHabitElement);
+        // Reset input field
+        document.getElementById('habitdesc').value = '';
+    } else {
+        // Handle unsuccessful response
+        alert(result.message);
+    }
+}
+
+
+
+
+
 // Function to handle habit checkbox
 function checkBox(event, form) {
     event.preventDefault();
