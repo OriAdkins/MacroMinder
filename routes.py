@@ -82,6 +82,8 @@ def register():
     db.session.commit()
     return render_template('LoginPage.html')
 
+# ------------------------------ ADMIN ROUTES --------------------------------------------
+
 #error checking to see if someone is an admin (avoids attacks)
 #also uses query to get all users, store in variable, and print them on the dashboard
 @app.route('/admin/dashboard')
@@ -146,6 +148,8 @@ def create_user():
     #using the redirect here acts as a dummy 'refresh' though I think it is better to use Jsonify and JS to handle that.
     #also used in other admin functions
     return redirect(url_for('admin_dashboard'))
+
+# ---------------------------- USER ROUTES ----------------------------------------------
 
 @app.route('/user/dashboard')
 def user_dashboard():
@@ -223,6 +227,30 @@ def addHabit():
         else:
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})
 
+@app.route('/checkbox', methods=['POST'])
+def checkBox():
+    habit_id = request.form.get('habit_id')
+    current_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(current_date)
+    completed = request.form.get('completed')=='True'
+    habit = HabitService.get_habit(habit_id)
+    if habit:
+        HabitService.mark_completed(habit, completed)
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Habit not found'})
+
+@app.route('/edithabit', methods=['POST'])
+def editHabit():
+    habit_id = request.form.get('habit_id')
+    new_description = request.form.get('new_description')
+
+    success = HabitService.edit_habit(habit_id, new_description)
+    
+    if success:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Habit not found'})
 
 @app.route('/coachAddHabit', methods=['POST'])
 def coachAddHabit():
@@ -243,33 +271,6 @@ def coachAddHabit():
             return jsonify({'success': False, 'message': 'User ID not provided.'})
 
 
-                
-@app.route('/checkbox', methods=['POST'])
-def checkBox():
-    habit_id = request.form.get('habit_id')
-    current_date = session.get('current_date')
-    current_date = TimeService.parse_session_date(current_date)
-    completed = request.form.get('completed')=='True'
-    habit = HabitService.get_habit(habit_id)
-    if habit:
-        HabitService.mark_completed(habit, completed)
-        return jsonify({'success': True})
-    else:
-        return jsonify({'success': False, 'message': 'Habit not found'})
-    
-@app.route('/edithabit', methods=['POST'])
-def editHabit():
-    habit_id = request.form.get('habit_id')
-    new_description = request.form.get('new_description')
-
-    success = HabitService.edit_habit(habit_id, new_description)
-    
-    if success:
-        return jsonify({'success': True})
-    else:
-        return jsonify({'success': False, 'message': 'Habit not found'})
-
-
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
@@ -282,7 +283,25 @@ def deleteHabit():
         return jsonify({'success': True})
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
+    
 
+@app.route('/addmacros', methods=['POST'])
+def add_macros():
+    # Add macro to the database
+    userid = session.get('userid')
+    data = request.get_json()
+    protein = data['protein']
+    calories = data['calories']
+    weightlbs = data['weightlbs']
+    current_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(current_date)
+
+    new_macro = CompletionLogService.add_completion_log(userid, current_date, protein, calories, 0, weightlbs)
+  
+    return jsonify({"success": True})
+
+
+# ----------------------- LIFECOACH ROUTES ---------------------------------------
     
 #@app.route('/lifecoach/dashboard')
 #def lifecoach_dashboard():
@@ -341,20 +360,6 @@ def view_user_dashboard(user_id):
 
     return render_template('ViewUserDashboard.html', user=user, user_username=user_username, habits=habits)
 
-@app.route('/addmacros', methods=['POST'])
-def add_macros():
-    # Add macro to the database
-    userid = session.get('userid')
-    data = request.get_json()
-    protein = data['protein']
-    calories = data['calories']
-    weightlbs = data['weightlbs']
-    current_date = session.get('current_date')
-    current_date = TimeService.parse_session_date(current_date)
-
-    new_macro = CompletionLogService.add_completion_log(userid, current_date, protein, calories, 0, weightlbs)
-  
-    return jsonify({"success": True})
 
 @app.route('/coach/logmacros', methods=['POST'])
 def coach_log_macros():
