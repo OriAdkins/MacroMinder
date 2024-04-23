@@ -31,30 +31,6 @@
             <div class="row tm-content-row tm-mt-big">
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Macro Tracker</h2>
-                        <!--------------------------- MACROS --------------------------->
-                        <div id="macros">
-                            <form id="macrosForm" onsubmit="logMacros(event)">
-                                <label for="proteinInput">Protein (grams):</label>
-                                <input type="number" id="proteinInput" name="proteinInput" required>
-                                <br> <!-- New line -->
-                                <label for="caloriesInput">Calories:</label>
-                                <input type="number" id="caloriesInput" name="caloriesInput" required>
-                                <br> <!-- New line -->
-                                <label for="weightInput">Current Weight (lbs):</label>
-                                <input type="number" id="weightInput" name="weightInput" required>
-                                <br> <!-- New line -->
-                                <button type="submit" class="btn btn-primary">Log Macros</button>
-                            </form>
-                        </div>
-                        <canvas id="lineChart"></canvas>
-                    </div>
-                    <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Plotly Graph for macros here.</h2>
-                    </div>
-                </div>
-                <div class="tm-col tm-col-big">
-                    <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--------------------------- HABITS --------------------------->
                         <!--display the habit descriptions of the habits passed in-->
@@ -95,6 +71,34 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Macro Tracker</h2>
+                        <!--------------------------- MACROS --------------------------->
+                        <div id="macros">
+                            <form id="macrosForm" onsubmit="logMacros(event)">
+                                <label for="proteinInput">Protein (grams):</label>
+                                <input type="number" id="proteinInput" name="proteinInput" required>
+                                <br> <!-- New line -->
+                                <label for="caloriesInput">Calories:</label>
+                                <input type="number" id="caloriesInput" name="caloriesInput" required>
+                                <br> <!-- New line -->
+                                <label for="weightInput">Current Weight (lbs):</label>
+                                <input type="number" id="weightInput" name="weightInput" required>
+                                <br> <!-- New line -->
+                                <button type="submit" class="btn btn-primary">Log Macros</button>
+                            </form>
+                        </div>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    
+                    <div class="tm-col tm-col-big">
+                        <div class="bg-white tm-block h-100">
+                            {{ macros_html | safe }}
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">

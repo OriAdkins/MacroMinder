@@ -29,6 +29,15 @@ h1 {
     background: none;
 }
 
+.macro_graph .tm-block {
+    padding: 40px; /* Increased padding */
+}
+
+#macroGraphContainer {
+    width: 800px; /* Set the width to fill the entire container */
+    height: 500px; /* Set a fixed height or adjust as needed */
+}
+
 #header-bar h1 {
     margin: 0;
     font-size: 40px;
@@ -54,7 +63,18 @@ h1 {
 
 .tm-col {
     flex: 1 1 auto;
-    max-width: 300px;
+    max-width: 400px;
+}
+
+.extended-col {
+    flex: 1 1 auto;
+    max-width: 1000px; /* Adjust the maximum width */
+    margin-left: 20px; /* Add left margin to create space between columns */
+}
+
+.extended-col-big {
+    max-width: 1000px; /* Adjust the maximum width */
+    margin-left: 20px; /* Add left margin to create space between columns */
 }
 
 /* Blocks */
@@ -151,4 +171,13 @@ h1 {
     color: white;
     font-size: 18px;
     margin: 0 15px;
+}
+
+.macro_graph {
+    background-color: rgba(255, 255, 255, 0.8);;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.8);
+    border: 1.5px solid black;
+    margin-bottom: 10px; 
 }

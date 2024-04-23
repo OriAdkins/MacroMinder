@@ -72,3 +72,14 @@ class CompletionLogService:
     def fetch_macros_for_current_user(user_id):
         macros = CompletionLog.query.filter_by(user_id=user_id).all()
         return macros
+    
+    @staticmethod
+    def fetch_weight_data(user_id):
+        # Fetch weight and date data from CompletionLog table for the given user_id
+        logs = CompletionLog.query.filter_by(user_id=user_id).all()
+
+        # Extract dates and weights from the logs
+        dates = [log.date for log in logs]
+        weights = [log.weightlbs for log in logs]
+
+        return dates, weights

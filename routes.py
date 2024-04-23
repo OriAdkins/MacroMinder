@@ -193,6 +193,26 @@ def user_dashboard():
     # I read that using Dash ? helps create more dynamic graphs here.
     graph_html = fig.to_html(full_html=False)
 
+
+    dates, weights = CompletionLogService.fetch_weight_data(userid)
+
+    # Create a line graph
+    fig = go.Figure()
+
+    # Add a trace for weight over time
+    fig.add_trace(go.Scatter(x=dates, y=weights, mode='lines', name='Weight'))
+
+    # Update the layout
+    fig.update_layout(
+        title='Weight Over Time',
+        xaxis=dict(title='Date'),
+        yaxis=dict(title='Weight (lbs)',range=[0, 300]),
+        height=300,  # Set the height of the graph (in pixels)
+        width= 350, 
+    )
+    # Convert the figure to HTML
+    macros_html = fig.to_html(full_html=False)
+
     #current_date = datetime.date.today()
 
     #HabitService.get_habits_from_prev_days(userid, date)
@@ -203,7 +223,8 @@ def user_dashboard():
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
     #load UserDashboard.html with habits
-    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, connected_coach=connected_coach, graph_html=graph_html)
+    return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, connected_coach=connected_coach, graph_html=graph_html,
+                           macros_html=macros_html)
 
 
 @app.route('/set_coach/<int:life_coach_id>', methods=['POST'])
