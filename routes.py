@@ -349,17 +349,6 @@ def view_user(user_id):
     return render_template('UserView.html', user=user, user_id=user_id, habits=habits, current_date=current_date, user_username=user_username, graph_html=graph_html, macros_html=macros_html)
 
 
-@app.route('/lifecoach/viewuserdashboard/<int:user_id>')
-def view_user_dashboard(user_id):
-    if session.get('role') != 'LifeCoach':
-        return redirect(url_for('login'))
-
-    user = User.query.get(user_id)
-    user_username = user.username  #fetch user
-    habits = HabitService.list_habits(user_id)
-
-    return render_template('ViewUserDashboard.html', user=user, user_username=user_username, habits=habits)
-
 
 @app.route('/coach/logmacros', methods=['POST'])
 def coach_log_macros():
