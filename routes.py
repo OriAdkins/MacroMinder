@@ -289,12 +289,22 @@ def view_user(user_id):
     # Retrieve the user from the database
     user = User.query.get(user_id)
     user_username = user.username
+    session_date = session.get('current_date')
+    current_date = TimeService.parse_session_date(session_date)
+    
     if not user:
         flash('User not found.')
         return redirect(url_for('lifecoach_dashboard'))
+    
+    habits = HabitService.list_habits(user_id, current_date)
+    
+    graph_html = GraphService.generate_habit_progress_graph(current_date, user_id)
+
+    # Generate weight over time graph HTML
+    macros_html = GraphService.generate_weight_over_time_graph(user_id)
 
     # Render the UserView.html template with the user's information
-    return render_template('UserView.html', user=user, user_username=user_username)
+    return render_template('UserView.html', user=user, habits=habits, current_date=current_date, user_username=user_username, graph_html=graph_html, macros_html=macros_html)
 
 
 @app.route('/lifecoach/viewuserdashboard/<int:user_id>')
