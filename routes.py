@@ -6,6 +6,7 @@ from services.HabitService import HabitService
 from services.CompletionLogService import CompletionLogService
 from services.TimeService import TimeService
 from services.CoachingService import CoachingService
+from services.GraphService import GraphService
 from datetime import date, datetime
 import pandas as pd
 import plotly.graph_objects as go
@@ -171,51 +172,10 @@ def user_dashboard():
     # copy them over in habit service. 
 
     # pull data for graph from HabitService
-    total_habits = HabitService.count_total_habits_for_user(current_date, userid)
-    completed_habits = HabitService.count_completed_habits_for_user(current_date, userid)
-    # create graph, much like HW3 EC
-    fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=['Completed Habits'],
-        y=[completed_habits],
-        name='Completed',
-        marker_color='rgb(55, 83, 109)'
-    ))
+    graph_html = GraphService.generate_habit_progress_graph(current_date, userid)
 
-    #make the graph layout -> y axis is our total habits for the day
-    fig.update_layout(
-        title='Habit Progress',
-        xaxis=dict(title=''),
-        yaxis=dict(title='Total Habits for Today', range=[0, total_habits])
-    )
-
-    # make the graph html so we use JINJA to put it in the dashboard
-    # I read that using Dash ? helps create more dynamic graphs here.
-    graph_html = fig.to_html(full_html=False)
-
-
-    dates, weights = CompletionLogService.fetch_weight_data(userid)
-
-    # Create a line graph
-    fig = go.Figure()
-
-    # Add a trace for weight over time
-    fig.add_trace(go.Scatter(x=dates, y=weights, mode='lines', name='Weight'))
-
-    # Update the layout
-    fig.update_layout(
-        title='Weight Over Time',
-        xaxis=dict(title='Date'),
-        yaxis=dict(title='Weight (lbs)',range=[0, 300]),
-        height=300,  # Set the height of the graph (in pixels)
-        width= 350, 
-    )
-    # Convert the figure to HTML
-    macros_html = fig.to_html(full_html=False)
-
-    #current_date = datetime.date.today()
-
-    #HabitService.get_habits_from_prev_days(userid, date)
+    # Generate weight over time graph HTML
+    macros_html = GraphService.generate_weight_over_time_graph(userid)
 
     #LETS GOOOOOOO THIS WORKS
     #current_date = date(2024, 4, 22)
