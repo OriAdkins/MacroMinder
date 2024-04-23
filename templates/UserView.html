@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Copperplate+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="dashboard.css">
+
+</head>
+<body id="reportsPage">
+    <div id="header-bar">
+        <h1>Macrominder</h1>
+    </div>
+    <div id="tm-col tm-col-big" style="text-align: center;">
+        <button onclick="previousDate()">◀</button>
+        <span id="currentDate" style="display: inline-block;">{{ current_date }}</span>
+        <button onclick="nextDate()">▶</button>
+    </div>
+    <!--logout button-->
+    <div class="logout-button">
+        <form action="/signout" method="GET, POST">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+    </div>
+    <div class="" id="home">
+        <div class="container">
+            <!-- row -->
+            <div class="row tm-content-row tm-mt-big">
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Macro Tracker</h2>
+                        <!--------------------------- MACROS --------------------------->
+                        <div id="macros">
+                            <form id="macrosForm" onsubmit="logMacros(event)">
+                                <label for="proteinInput">Protein (grams):</label>
+                                <input type="number" id="proteinInput" name="proteinInput" required>
+                                <br> <!-- New line -->
+                                <label for="caloriesInput">Calories:</label>
+                                <input type="number" id="caloriesInput" name="caloriesInput" required>
+                                <br> <!-- New line -->
+                                <label for="weightInput">Current Weight (lbs):</label>
+                                <input type="number" id="weightInput" name="weightInput" required>
+                                <br> <!-- New line -->
+                                <button type="submit" class="btn btn-primary">Log Macros</button>
+                            </form>
+                        </div>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Plotly Graph for macros here.</h2>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">Habits</h2>
+                        <!--------------------------- HABITS --------------------------->
+                        <!--display the habit descriptions of the habits passed in-->
+
+                        <div class="habit-list">
+                            {% for habit in habits %}
+                                <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
+                                    <input type="hidden" name="habit_id" value="{{ habit.habit_id }}">
+                                    <input type="checkbox" id="habit_{{ habit.habit_id }}" name="completed" value="True" {{ 'checked' if habit.is_completed else '' }}>
+                                    <label class="habit-description" for="habit_{{ habit.habit_id }}">{{ habit.habit_description }}</label>
+                                    <button type="button" onclick="showEditPopup('{{ habit.habit_id }}', '{{ habit.habit_description }}')">Edit</button>
+                                    <button type="button" onclick="deleteHabit('{{ habit.habit_id }}', event)">Delete</button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                        <!--edit popup; initially hidden (display: none) until the edit button is clicked-->
+                        <div id="editPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 2;">
+                            <form id="editForm" onsubmit="submitEdit(event)">
+                                <input type="hidden" id="editHabitId" name="habit_id">
+                                <label for="newHabitDescription">New Description:</label>
+                                <input type="text" id="newHabitDescription" name="new_description" required>
+                                <button type="submit">Submit</button>
+                                <button type="button" onclick="closeEditPopup()">Cancel</button>
+                            </form>
+                        </div>
+                        <canvas id="barChart"></canvas>
+                        <!--button for adding a habit-->
+                        <!--onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file)-->
+                        <form id="add-habit-form" method="POST" onsubmit="addHabit(event)">
+                            <input type="text" id="habitdesc" name="habitdesc" required>
+                            <button type="submit" class="btn btn-primary">Add Habit</button>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="tm-col tm-col-big">
+                            <div class="bg-white tm-block h-100">
+                                {{ graph_html | safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tm-col tm-col-big">
+                    <div class="bg-white tm-block h-100">
+                        <h2 class="tm-block-title">You are viewing {{ user_username }}'s dashboard!</h2>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+</body>
+</html>

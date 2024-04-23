@@ -5,6 +5,7 @@ from services.UserService import UserService
 from services.HabitService import HabitService
 from services.CompletionLogService import CompletionLogService
 from services.TimeService import TimeService
+from services.CoachingService import CoachingService
 from datetime import date, datetime
 import pandas as pd
 import plotly.graph_objects as go
@@ -143,10 +144,6 @@ def create_user():
     #also used in other admin functions
     return redirect(url_for('admin_dashboard'))
 
-@app.route('/lifecoach/dashboard')
-def lifecoach_dashboard():
-    return render_template('LifecoachDashboard.html')
-
 @app.route('/user/dashboard')
 def user_dashboard():
     userid = session.get('userid') #retrive userid from session; id of the logged in user
@@ -283,6 +280,42 @@ def deleteHabit():
         return jsonify({'success': False, 'message': 'Habit not found'})
 
     
+#@app.route('/lifecoach/dashboard')
+#def lifecoach_dashboard():
+#    return render_template('LifecoachDashboard.html') 
+
+@app.route('/lifecoach/dashboard')
+def lifecoach_dashboard():
+    username = session.get('username')
+    # Check lifecoach role
+    if session.get('role') != 'LifeCoach':
+        return redirect(url_for('login'))
+
+    # Get the lifecoach's ID from the session
+    lifecoach_id = session.get('userid')
+
+    # Fetch paired users for the lifecoach
+    paired_users = CoachingService.get_paired_users(lifecoach_id)
+
+    # Render the lifecoach dashboard template with paired users
+    return render_template('LifecoachDashboard.html', paired_users=paired_users, username=username)
+
+@app.route('/viewuser/<int:user_id>', methods=['GET'])
+def view_user(user_id):
+    # Check if the user is logged in
+    #if 'userid' not in session:
+    #    return redirect(url_for('login'))
+    # Retrieve the user from the database
+    user = User.query.get(user_id)
+    user_username = user.username
+    if not user:
+        flash('User not found.')
+        return redirect(url_for('lifecoach_dashboard'))
+
+    # Render the UserView.html template with the user's information
+    return render_template('UserView.html', user=user, user_username=user_username)
+
+
 @app.route('/lifecoach/viewuserdashboard/<int:user_id>')
 def view_user_dashboard(user_id):
     if session.get('role') != 'LifeCoach':

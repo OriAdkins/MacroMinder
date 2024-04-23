@@ -24,21 +24,22 @@
         <div class="container">
             <!-- row -->
             <div class="row tm-content-row tm-mt-big">
-                <div class="tm-col tm-col-big">
-                    <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Macro Tracker</h2>
-                        <canvas id="lineChart"></canvas>
-                    </div>
+                <div class="bg-white tm-block h-100">
+                    <h2 class="tm-block-title">Welcome, {{ username }}, you are a coach!</h2>
                 </div>
                 <div class="tm-col tm-col-big">
                     <div class="bg-white tm-block h-100">
-                        <h2 class="tm-block-title">Habits</h2>
-                        <canvas id="barChart"></canvas>
-                    </div>
-                </div>
-                <div class="tm-col tm-col-big"> <!-- Adjusted class to make the third block same size -->
-                    <div class="bg-white tm-block h-100"> <!-- Adjusted class to make the third block same size -->
-                        <h2 class="tm-block-title">Welcome, you are a lifecoach!</h2>
+                        <h2 class="tm-block-title">Paired Users</h2>
+                        <ul>
+                            {% for user in paired_users %}
+                                <li style="color: black;">
+                                    {{ user.username }}
+                                    <form action="/viewuser/{{ user.id }}" method="GET">
+                                        <button type="submit" class="btn btn-primary">View User</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -47,5 +48,3 @@
 </body>
 
 </html>
-
-
