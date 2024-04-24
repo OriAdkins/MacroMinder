@@ -50,6 +50,19 @@ Admins are able to edit users roles, usernames, and passwords if necessary.\
 Admins can also create new users from their dashboard.
 
 ## How to Run
+
+### Creating the DB
+
+# On Windows Machines
+First, install MySQL Server and Shell. These will allow you to create a local database to interact with the program.
+Using MySql Shell, connect to a MySql server, and create the DB.
+
+# On Ubuntu (Linux)
+Follow this tutorial until you can login to an instance of MySql, then create the DB.
+https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
+
+### First Steps
+
 First Steps\
   Ensure you have an SQL Server instance running\
   Pull up the project in a terminal\
