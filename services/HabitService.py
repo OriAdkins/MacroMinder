@@ -20,6 +20,8 @@ class HabitService:
 
         prev_habit_list = Habits.query.filter_by(date = previous_date)
 
+
+
         #for i in prev_habit_list:
             #call add_habit()???
 
@@ -52,11 +54,11 @@ class HabitService:
 
     @staticmethod
     def add_habit(user_id, description, current_date):
-        existing_habit = Habits.query.filter_by(user_id=user_id, habit_description=description).first()
+        existing_habit = Habits.query.filter_by(user_id=user_id, habit_description=description, date=current_date).first()
         if existing_habit:
-            return False, 'This habit already exists'
-    
-        # Create a new Habits object with the current date
+            return False, 'This habit already exists for today'
+        
+        # add new habit to db
         new_habit = Habits(user_id=user_id, habit_description=description, date=current_date)
         db.session.add(new_habit)
         db.session.commit()
