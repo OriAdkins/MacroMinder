@@ -11,7 +11,6 @@ MacroMinder - A Web App to track your macros and habits through the week!
 │ └── LoginPage.html
 │ └── RegisterPage.html
 │ └── UserDashboard.html
-│ └── ViewUserDashboard.html
 ├── services/
 │ └── CompletionLogService.py
 │ └── HabitService.py
@@ -29,6 +28,26 @@ MacroMinder - A Web App to track your macros and habits through the week!
 ├── routes.py
 ├── readme.md
 ```
+
+### List of Implemented Features
+
+#### User Features
+
+Users have full CRUD functionality for Habits, being able to view a list of their daily habits while being able to edit and delete them as they wish.\
+Users can also input Macro Data, and are limited to one input per day, however any subsequent inputs will edit the submission for that day to reflect the new input.\
+Macro data is reflected in the Plotly line graph, which updates to show the users weight over the date. \
+Users also have access to a list of the current signed-up lifecoaches, where they can choose a lifecoach to 'pair to'.
+
+#### Lifecoach Features
+
+Lifecoaches have access to any paired Users dashboard, allowing them to add macro and habits for them.\
+Lifecoaches can be paired to many users, but users can only have one lifecoach.
+
+#### Admin Features
+
+Admins are able to see a comprehensive list of all users and their role.\
+Admins are able to edit users roles, usernames, and passwords if necessary.\
+Admins can also create new users from their dashboard.
 
 ## How to Run
 First Steps\
