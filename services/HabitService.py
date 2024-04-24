@@ -4,7 +4,6 @@ import datetime
 from services.TimeService import TimeService
 from flask import request, session
 
-
 class HabitService:
 
     @staticmethod
@@ -17,13 +16,7 @@ class HabitService:
     @staticmethod
     def check_for_existing_habits(userid, date):
         previous_date = date - HabitService.current_date.timedelta(days=1)
-
         prev_habit_list = Habits.query.filter_by(date = previous_date)
-
-
-
-        #for i in prev_habit_list:
-            #call add_habit()???
 
     @staticmethod
     def count_total_habits_for_user(current_date, user_id):
@@ -36,9 +29,7 @@ class HabitService:
         return completed_habits_count
 
     @staticmethod
-    def list_habits(user_id, current_date): #change to take in date???
-        #current_date = TimeService.get_current_date()
-        #print("Type of current_date:", type(current_date))  # Debug print
+    def list_habits(user_id, current_date):
         habits = Habits.query.filter_by(user_id=user_id, date=current_date).all()
         return habits
     
@@ -86,4 +77,3 @@ class HabitService:
             return True
         else:
             return False
-

@@ -31,12 +31,6 @@ class UserService:
     
     @staticmethod
     def delete_user(user_id):
-        # Delete all habits associated with the user
-        #HabitService.delete_all_user_habits(user_id)
-        
-        # Delete all completion logs associated with the user
-        #CompletionLogService.delete_all_user_completion_logs(user_id)
-        
         # Delete the user
         user = User.query.get(user_id)
         if user:

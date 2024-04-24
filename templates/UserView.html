@@ -34,8 +34,6 @@
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--------------------------- HABITS --------------------------->
-                        <!--display the habit descriptions of the habits passed in-->
-
                         <div class="habit-list">
                             {% for habit in habits %}
                             <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
@@ -59,7 +57,6 @@
                         </div>
                         <canvas id="barChart"></canvas>
                         <!--button for adding a habit-->
-                        <!--onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file)-->
                         <form id="add-habit-form" method="POST" onsubmit="coachAddHabit(event)">
                             <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}">
                             <input type="text" id="habitdesc" name="habitdesc" required>
@@ -114,7 +111,6 @@
         </div>
     </div>
     
-
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
     
 </body>

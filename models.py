@@ -28,7 +28,6 @@ class Habits(db.Model):
         PrimaryKeyConstraint('habit_id', 'date'),
         {},
     )
-    #user = db.relationship('User', backref='habits')
 
 
 # Db table for tracking the macro for the day, tasks_completed is for habits

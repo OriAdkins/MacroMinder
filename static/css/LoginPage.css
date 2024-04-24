@@ -22,9 +22,9 @@ body {
 
 /* LoginPage.css */
 .main a {
-    color: #fff; /* Change text color to white */
-    text-align: center; /* Center the text */
-    display: block; /* Make the link a block element */
+    color: #fff; 
+    text-align: center;
+    display: block;
     margin-top: 20px; /* Add some top margin for spacing */
 }
 
@@ -138,5 +138,5 @@ button:hover {
 }
 
 .signup select[name="role"] option:checked {
-    color: black; /* Change text color to black */
+    color: black;
 }

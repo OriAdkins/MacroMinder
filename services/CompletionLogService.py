@@ -1,16 +1,15 @@
 from models import CompletionLog
 from models import User
-#from flask_login import current_user
 from app import db
 
 class CompletionLogService:
+    
     @staticmethod
     def delete_all_user_completion_logs(user_id):
         logs = CompletionLog.query.filter_by(user_id=user_id).all()
         for log in logs:
             db.session.delete(log)
         db.session.commit()
-
 
     # Instead of having an edit button, we 'limit' the user to one log per day by checking against 
     # the date stored in the db 
@@ -40,7 +39,6 @@ class CompletionLogService:
         db.session.commit()
         return existing_log.tracking_id if existing_log else new_log.tracking_id
 
-    
     @staticmethod
     def edit_completion_log(log_id, protein=None, calories=None, tasks_completed=None, weightlbs=None):
         log = CompletionLog.query.get(log_id)

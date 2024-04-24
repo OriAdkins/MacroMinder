@@ -11,10 +11,6 @@ from datetime import date, datetime
 import pandas as pd
 import plotly.graph_objects as go
 
-
-
-# Render login page
-
 # Login route
 # changed to get post, because we need the intial get request - Ori Changes also reflected in html
 @app.route('/', methods=['GET', 'POST'])
@@ -30,16 +26,6 @@ def login():
             session['userid'] = existingUser.id 
             session['role'] = existingUser.role
             session['current_date'] = date.today()
-
-            # get.session.id check the user!
-            # check time session['current_date'] = datetime.date.today()
-            # call HabitService function that takes the userid and date
-            # checkforexistinghabits(userid, date)
-            # query db for prev day, add them to today (or call a function that does)
-            # that would be added to the list of habits today which is already called by list_habits()
-
-
-
 
             #Check user role and redirect accordingly
             #print("User role:", existingUser.role)  # Debug print to check the user's role
@@ -300,12 +286,7 @@ def add_macros():
   
     return jsonify({"success": True})
 
-
 # ----------------------- LIFECOACH ROUTES ---------------------------------------
-    
-#@app.route('/lifecoach/dashboard')
-#def lifecoach_dashboard():
-#    return render_template('LifecoachDashboard.html') 
 
 @app.route('/lifecoach/dashboard')
 def lifecoach_dashboard():
@@ -395,10 +376,3 @@ def next_day():
 def prev_day():
     TimeService.set_previous_date()
     return jsonify({'success': True})
-
-
-#add two routes for going forward and back a date
-
-#next and prev date button
-#route next prev date button 
-#session[current_date] = next/prev datetimetoday

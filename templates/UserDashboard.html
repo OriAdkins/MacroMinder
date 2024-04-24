@@ -33,8 +33,6 @@
                     <div class="bg-white tm-block h-100">
                         <h2 class="tm-block-title">Habits</h2>
                         <!--------------------------- HABITS --------------------------->
-                        <!--display the habit descriptions of the habits passed in-->
-
                         <div class="habit-list">
                             {% for habit in habits %}
                                 <form id="habitForm_{{ habit.habit_id }}" onchange="checkBox(event, this)">
@@ -58,7 +56,6 @@
                         </div>
                         <canvas id="barChart"></canvas>
                         <!--button for adding a habit-->
-                        <!--onsubmit="addHabit(event)": add an event listener to the submit action, addHabit (see at the bottom of this file)-->
                         <form id="add-habit-form" method="POST" onsubmit="addHabit(event)">
                             <input type="text" id="habitdesc" name="habitdesc" required>
                             <button type="submit" class="btn btn-primary">Add Habit</button>
@@ -80,13 +77,13 @@
                             <form id="macrosForm" onsubmit="logMacros(event)">
                                 <label for="proteinInput">Protein (grams):</label>
                                 <input type="number" id="proteinInput" name="proteinInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <label for="caloriesInput">Calories:</label>
                                 <input type="number" id="caloriesInput" name="caloriesInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <label for="weightInput">Current Weight (lbs):</label>
                                 <input type="number" id="weightInput" name="weightInput" required>
-                                <br> <!-- New line -->
+                                <br>
                                 <button type="submit" class="btn btn-primary">Log Macros</button>
                             </form>
                         </div>

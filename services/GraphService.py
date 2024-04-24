@@ -4,6 +4,7 @@ from services.CompletionLogService import CompletionLogService
 
 class GraphService:
 
+    @staticmethod
     def generate_habit_progress_graph(current_date, user_id):
         total_habits = HabitService.count_total_habits_for_user(current_date, user_id)
         completed_habits = HabitService.count_completed_habits_for_user(current_date, user_id)
@@ -25,6 +26,7 @@ class GraphService:
         graph_html = fig.to_html(full_html=False)
         return graph_html
 
+    @staticmethod
     def generate_weight_over_time_graph(user_id):
         dates, weights = CompletionLogService.fetch_weight_data(user_id)
 
