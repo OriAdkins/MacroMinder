@@ -71,6 +71,46 @@ First Steps\
   - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools numpy plotly pandas```
   type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000
 
+  Enter mysql mysql -u root -p (enter password for root or your username input)
+  Once in an instance of mysql, create a database, and run these commands to make the neccessary tables: \
+CREATE DATABASE macrominder; \
+CREATE TABLE User ( \
+    id INT AUTO_INCREMENT PRIMARY KEY, \
+    username VARCHAR(80) UNIQUE NOT NULL, \
+    password VARCHAR(80) NOT NULL, \
+    role VARCHAR(80) NOT NULL \
+); \
+CREATE TABLE Habits ( \
+    habit_id INT, \
+    user_id INT NOT NULL, \
+    habit_description VARCHAR(255) NOT NULL, \
+    is_completed BOOLEAN DEFAULT FALSE, \
+    date DATE NOT NULL, \ 
+    PRIMARY KEY (habit_id, date), \
+    FOREIGN KEY (user_id) REFERENCES User(id) \
+); \
+CREATE TABLE CompletionLog ( \
+    tracking_id INT PRIMARY KEY AUTO_INCREMENT, \
+    user_id INT NOT NULL, \
+    date DATE NOT NULL, \
+    protein INT DEFAULT 0, \
+    calories INT DEFAULT 0, \
+    tasks_completed INT DEFAULT 0, \
+    weightlbs DECIMAL (5,2) DEFAULT 150.00, \
+    FOREIGN KEY (user_id) REFERENCES User(id) \
+); 
+
+CREATE TABLE CoachingGroups ( \
+    life_coach_id INT NOT NULL, \
+    user_id INT NOT NULL, \
+    PRIMARY KEY (life_coach_id, user_id), \
+    FOREIGN KEY (life_coach_id) REFERENCES User(id), \
+    FOREIGN KEY (user_id) REFERENCES User(id) \
+); 
+
+
+
+
 ### If you are having errors, here are some commands that might help - Ori
 #### Dependencies to install
 ``` sudo pip install mysqlclient ```\
