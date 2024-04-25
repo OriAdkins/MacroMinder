@@ -72,7 +72,7 @@ First Steps\
   type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000
 
   Enter mysql mysql -u root -p (enter password for root or your username input)
-  Once in an instance of mysql, create a database, and run these commands to make the neccessary tables:
+  Once in an instance of mysql, create a database, and run these commands to make the neccessary tables: \
 CREATE DATABASE macrominder; \
 CREATE TABLE User ( \
     id INT AUTO_INCREMENT PRIMARY KEY, \
@@ -98,7 +98,7 @@ CREATE TABLE CompletionLog ( \
     tasks_completed INT DEFAULT 0, \
     weightlbs DECIMAL (5,2) DEFAULT 150.00, \
     FOREIGN KEY (user_id) REFERENCES User(id) \
-); \
+); 
 
 CREATE TABLE CoachingGroups ( \
     life_coach_id INT NOT NULL, \
@@ -106,7 +106,7 @@ CREATE TABLE CoachingGroups ( \
     PRIMARY KEY (life_coach_id, user_id), \
     FOREIGN KEY (life_coach_id) REFERENCES User(id), \
     FOREIGN KEY (user_id) REFERENCES User(id) \
-); \
+); 
 
 
 
