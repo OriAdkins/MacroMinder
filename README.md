@@ -68,7 +68,7 @@ First Steps\
   Pull up the project in a terminal\
   Navigate into the server folder\
   Install dependencies (Check dependencies section) using
-  - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools numpy plotly pandas```
+  - ```python3 -m pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools numpy plotly pandas```
   type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000 \
 
   In the app.py, edit the following line: app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:monkeyinhospital@localhost/users' \
