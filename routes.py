@@ -11,8 +11,8 @@ from datetime import date, datetime
 import pandas as pd
 import plotly.graph_objects as go
 
-# Login route
-# changed to get post, because we need the intial get request - Ori Changes also reflected in html
+# route for login, it gets the username and password to verify the user
+# this route sets up all session id's and directs the user to the correct dashboard
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -21,14 +21,11 @@ def login():
         existingUser = User.query.filter_by(username=username).first()
 
         if existingUser and bcrypt.check_password_hash(existingUser.password, password):
-            #store the user id in current session
             session['username'] = existingUser.username
             session['userid'] = existingUser.id 
             session['role'] = existingUser.role
             session['current_date'] = date.today()
 
-            #Check user role and redirect accordingly
-            #print("User role:", existingUser.role)  # Debug print to check the user's role
             if existingUser.role == 'Admin':
                 return redirect(url_for('admin_dashboard'))  
             elif existingUser.role == 'LifeCoach':
@@ -38,7 +35,6 @@ def login():
         else:
             flash('Invalid username or password')
 
-    # Render the login page (GET request or failed login)
     return render_template('LoginPage.html')
 
 #route to log out of current account
@@ -54,7 +50,7 @@ def logout():
 def goToRegister():
     return render_template('RegisterPage.html')
 
-# Registration route
+# this route obtains the information to build a user, calls UserService to create a user
 @app.route('/register', methods=['POST'])
 def register():
     username = request.form.get('username')
@@ -70,27 +66,23 @@ def register():
 
 # ------------------------------ ADMIN ROUTES --------------------------------------------
 
-#error checking to see if someone is an admin (avoids attacks)
-#also uses query to get all users, store in variable, and print them on the dashboard
+#the admin dashboard, obtains a full list of users using the UserService function
 @app.route('/admin/dashboard')
 def admin_dashboard():
     if session.get('role') != 'Admin':
         return redirect(url_for('login'))
     
     users = UserService.list_users()
-    #lifecoaches = User.query.filter_by(role='LifeCoach').all()
 
     return render_template('AdminDashboard.html', users=users)
 
 #Admin functionality of the delete portion of crud, new simplified version to make things simpler.
+# this route uses multiple backend Services to delete a user, and all associated records in the db
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     if session.get('role') != 'Admin':
-        # Redirect the user to the login page if they are not an admin
         return redirect(url_for('login'))
     
-    #delete all related data first, then the user
-    #utilizing service layer
     HabitService.delete_all_user_habits(user_id)
     
     CompletionLogService.delete_all_user_completion_logs(user_id)
@@ -99,13 +91,12 @@ def delete_user(user_id):
     
     success = UserService.delete_user(user_id)
     
-    # Redirect the user to the admin dashboard regardless of the outcome
     return redirect(url_for('admin_dashboard'))
 
-#Route/function for processing the post request for editing a user
+#Route takes in information from html of the new username,role,and password
+#passes that information to the update user UserService funtion
 @app.route('/admin/edit_user/<int:user_id>', methods=['POST'])
 def update_user(user_id):
-    #first check against the role (like the other admin functions)
     if session.get('role') != 'Admin':
         return redirect(url_for('login'))
     
@@ -118,33 +109,33 @@ def update_user(user_id):
     return redirect(url_for('admin_dashboard'))
 
 
-#route for admin page that allows them to create users.  
+#route for admin page that allows them to create users. 
+#same as edit, calls create user 
 @app.route('/admin/create_user', methods=['POST'])
 def create_user():
     if session.get('role') != 'Admin':
         return redirect(url_for('login'))
     
-    #essentially the same as login, just only accessible from the admin dashboard
     username = request.form.get('username')
     password = request.form.get('password')
     role = request.form.get('role')
 
-    #This calls the service for create user
     newUser = UserService.create_user(username, password, role)
-    #using the redirect here acts as a dummy 'refresh' though I think it is better to use Jsonify and JS to handle that.
-    #also used in other admin functions
+
     return redirect(url_for('admin_dashboard'))
 
 # ---------------------------- USER ROUTES ----------------------------------------------
 
+#the main user dashboard, calls various service layer functions to obtain all required information
+#HabitService prints the habits for the session date, GraphService prints the graph corresponding
+#UserService prints the lifecoach and Coaching groups checks for any paired groups.
 @app.route('/user/dashboard')
 def user_dashboard():
-    userid = session.get('userid') #retrive userid from session; id of the logged in user
+    userid = session.get('userid')
     username = session.get('username')
     session_date = session.get('current_date')
+    #we have to use this to get the session date in a format the db can read
     current_date = TimeService.parse_session_date(session_date)
-    #current_date_iso = current_date.isoformat()
-    
 
     life_coaches = UserService.get_life_coaches()
     connected_coach = None
@@ -152,41 +143,26 @@ def user_dashboard():
         coaching_group = CoachingGroups.query.filter_by(user_id=userid, life_coach_id=coach.id).first()
         if coaching_group:
             connected_coach = coach
-            break
+            break 
 
-    print("Connected Coach:", connected_coach)  # Add this line to print the connected coach variable
-    print("Life Coaches:", life_coaches)  # Add this line to print the life coaches variable
-    print("Type of session_date:", type(session_date))
-    print("Type of session_date:", type(current_date))
-    # formatted_date = current_date.strftime('%Y-%m-%d')
-    # Handle case to copy habits over from previous date to current
-    # (1) check current date, check for habits on day before. 
-    # copy them over in habit service. 
-
-    # pull data for graph from HabitService
+    #use graphservice to create the 2 graphs printed on the dashboard
     graph_html = GraphService.generate_habit_progress_graph(current_date, userid)
-
-    # Generate weight over time graph HTML
     macros_html = GraphService.generate_weight_over_time_graph(userid)
-
-    #LETS GOOOOOOO THIS WORKS
-    #current_date = date(2024, 4, 22)
 
     habits = HabitService.list_habits(userid, current_date) #add date parameter
 
-    #load UserDashboard.html with habits
     return render_template('UserDashboard.html', habits=habits, current_date=current_date, username=username, life_coaches=life_coaches, connected_coach=connected_coach, graph_html=graph_html,
                            macros_html=macros_html)
 
-
+#A route to set a coach, called when a user clicks on an available lifecoach in the dashboard
+#uses Userservice to link a lifecoach and user in the CoachingGroups database table
 @app.route('/set_coach/<int:life_coach_id>', methods=['POST'])
 def set_coach(life_coach_id):
     print("Set coach route triggered")
     if session.get('role') != 'User':
         return redirect(url_for('login'))
-    user_id = session.get('userid')  # Get the user's ID from the session
+    user_id = session.get('userid')
 
-    # Call the UserService method to link the user_id and coach_id in the CoachingGroups table
     success = UserService.link_user_and_coach(user_id, life_coach_id)
     if success:
         flash('Coach added successfully')
@@ -196,6 +172,7 @@ def set_coach(life_coach_id):
     return redirect(url_for('user_dashboard'))
 
 #route to render the addhabit page or add a habit
+#called when a user clicks 'add' for a habit, takes the habit description and uses it to create a new habit for that date
 @app.route('/addhabit', methods=['POST','GET'])
 def addHabit():
     if request.method == 'POST':
@@ -213,6 +190,7 @@ def addHabit():
         else:
             return jsonify({'success': False, 'message': 'You must be logged in to add a habit.'})
 
+#called when a checkbox is clicked, sets the database variable is_completed to true or false
 @app.route('/checkbox', methods=['POST'])
 def checkBox():
     habit_id = request.form.get('habit_id')
@@ -226,6 +204,7 @@ def checkBox():
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
 
+#called when a user clicks edit habit, queries for the new description and edits the desired habit with HabitService
 @app.route('/edithabit', methods=['POST'])
 def editHabit():
     habit_id = request.form.get('habit_id')
@@ -238,25 +217,7 @@ def editHabit():
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
 
-@app.route('/coachAddHabit', methods=['POST'])
-def coachAddHabit():
-    if request.method == 'POST':
-        data = request.json  # Parse JSON data from request
-        description = data.get('habitdesc')
-        user_id = request.json.get('user_id')
-        current_date = session.get('current_date')
-        current_date = TimeService.parse_session_date(current_date)
-
-        if user_id:
-            success, response = HabitService.add_habit(user_id, description, current_date)
-            if success:
-                return jsonify({'success': True, 'habit_id': response})
-            else:
-                return jsonify({'success': False, 'message': response})
-        else:
-            return jsonify({'success': False, 'message': 'User ID not provided.'})
-
-
+#called when a user clicks delete habit, passes info to HabitService
 @app.route('/deletehabit', methods=['POST'])
 def deleteHabit():
     habit_id = request.form.get('habit_id')
@@ -270,7 +231,7 @@ def deleteHabit():
     else:
         return jsonify({'success': False, 'message': 'Habit not found'})
     
-
+#called when a user submits macro information, passes information to CompletionLogService
 @app.route('/addmacros', methods=['POST'])
 def add_macros():
     # Add macro to the database
@@ -288,6 +249,7 @@ def add_macros():
 
 # ----------------------- LIFECOACH ROUTES ---------------------------------------
 
+#the main lifecoach dashbaors, uses Coachingservice to print out all paired users
 @app.route('/lifecoach/dashboard')
 def lifecoach_dashboard():
     username = session.get('username')
@@ -304,6 +266,8 @@ def lifecoach_dashboard():
     # Render the lifecoach dashboard template with paired users
     return render_template('LifecoachDashboard.html', paired_users=paired_users, username=username)
 
+#the view of the users dashboard from a lifecoach view, prints everything a user might see from userdashboard
+#everything there applies here.
 @app.route('/viewuser/<int:user_id>', methods=['GET'])
 def view_user(user_id):
     # Check if the user is logged in
@@ -329,14 +293,29 @@ def view_user(user_id):
     # Render the UserView.html template with the user's information
     return render_template('UserView.html', user=user, user_id=user_id, habits=habits, current_date=current_date, user_username=user_username, graph_html=graph_html, macros_html=macros_html)
 
+#Lifecoaches version of add habit, gets the users id to add the habit through HabitService
+@app.route('/coachAddHabit', methods=['POST'])
+def coachAddHabit():
+    if request.method == 'POST':
+        data = request.json  # Parse JSON data from request
+        description = data.get('habitdesc')
+        user_id = request.json.get('user_id')
+        current_date = session.get('current_date')
+        current_date = TimeService.parse_session_date(current_date)
 
+        if user_id:
+            success, response = HabitService.add_habit(user_id, description, current_date)
+            if success:
+                return jsonify({'success': True, 'habit_id': response})
+            else:
+                return jsonify({'success': False, 'message': response})
+        else:
+            return jsonify({'success': False, 'message': 'User ID not provided.'})
 
+#coaches log macros, essentially the same as users but takes in the users ID so that it is added for them not the coach
 @app.route('/coach/logmacros', methods=['POST'])
 def coach_log_macros():
-    # Get user_id from the request
     user_id = request.json.get('user_id')
-
-    # Add macro to the database
     data = request.get_json()
     protein = data['protein']
     calories = data['calories']
@@ -349,29 +328,14 @@ def coach_log_macros():
 
 
 
-@app.route('/editmacros', methods=['POST'])
-def edit_macros():
-        # Edit macro in the database
-        userid = session.get('userid')
-        data = request.get_json()
-        macro_id = data['macro_id']
-        protein = data['protein']
-        calories = data['calories']
-        weightlbs = data['weightlbs']
-        date = data['date']
-
-        success = CompletionLogService.edit_completion_log(macro_id, protein, calories, 0, weightlbs)
-      
-        if success:
-            return jsonify({"success": True})
-        else:
-            return jsonify({"success": False, "message": "Macro not found"})
         
+#sets the session id to the next date, using TimeService
 @app.route('/nextday', methods=['POST'])
 def next_day():
     TimeService.set_next_date()
     return jsonify({'success': True})
 
+#sets the session ID to the previous date, using TimeService
 @app.route('/prevday', methods=['POST'])
 def prev_day():
     TimeService.set_previous_date()
