@@ -69,8 +69,13 @@ First Steps\
   Navigate into the server folder\
   Install dependencies (Check dependencies section) using
   - ```pip install Flask Flask-SQLAlchemy Flask-Bcrypt Flask-SocketIO setuptools numpy plotly pandas```
-  type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000
+  type ```flask run``` and the development server will deploy to your localhost http://127.0.0.1:5000 \
 
+  In the app.py, edit the following line: app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:monkeyinhospital@localhost/users' \
+  And instead replace root with who you are running the vm as, and replace monkeyinhospital with your password, and users with your database name made in the last step ie:\
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://"user":"password"@localhost/"databasename"' \
+  
+ 
   Enter mysql mysql -u root -p (enter password for root or your username input)
   Once in an instance of mysql, create a database, and run these commands to make the neccessary tables: \
 CREATE DATABASE macrominder; \
