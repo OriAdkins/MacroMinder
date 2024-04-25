@@ -13,6 +13,7 @@ class HabitService:
             db.session.delete(habit)
         db.session.commit()
 
+    #not used, would be used to check for exising habits and copy them over to today
     @staticmethod
     def check_for_existing_habits(userid, date):
         previous_date = date - HabitService.current_date.timedelta(days=1)

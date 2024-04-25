@@ -31,7 +31,6 @@ class UserService:
     
     @staticmethod
     def delete_user(user_id):
-        # Delete the user
         user = User.query.get(user_id)
         if user:
             db.session.delete(user)

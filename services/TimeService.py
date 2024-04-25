@@ -14,7 +14,7 @@ class TimeService:
     def get_current_date():
         session_date_str = session.get('current_date')
         try:
-            # Try parsing the date string in the expected format
+            #parse the string into expected iso format
             return datetime.strptime(session_date_str, '%a, %d %b %Y %H:%M:%S %Z').date()
         except ValueError:
             # If parsing fails, assume the date string is in ISO format
@@ -35,9 +35,9 @@ class TimeService:
     @staticmethod
     def parse_session_date(session_date_str):
         try:
-            # Try parsing the date string in the expected format
+            # parse the date int iso format
             parsed_date = datetime.strptime(session_date_str, '%a, %d %b %Y %H:%M:%S %Z')
         except ValueError:
-            # If parsing fails, try parsing in ISO format
+            # if it fails assume it is but parse anyway
             parsed_date = datetime.strptime(session_date_str, '%Y-%m-%d')
         return parsed_date.date()

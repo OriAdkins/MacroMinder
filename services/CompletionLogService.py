@@ -12,7 +12,7 @@ class CompletionLogService:
         db.session.commit()
 
     # Instead of having an edit button, we 'limit' the user to one log per day by checking against 
-    # the date stored in the db 
+    # the date stored in the db, serves as 'edit' functionality as well.
     @staticmethod
     def add_completion_log(user_id, date, protein=0, calories=0, tasks_completed=0, weightlbs=150):
         # Check if there is already a log for the given user and date

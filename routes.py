@@ -325,9 +325,6 @@ def coach_log_macros():
     new_macro = CompletionLogService.add_completion_log(user_id, current_date, protein, calories, 0, weightlbs)
   
     return jsonify({"success": True})
-
-
-
         
 #sets the session id to the next date, using TimeService
 @app.route('/nextday', methods=['POST'])
