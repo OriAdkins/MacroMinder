@@ -1,4 +1,4 @@
-# COP4521_Project
+# MacroMinder
 
 ## Project Overview
 MacroMinder - A Web App to track your macros and habits through the week!
@@ -141,10 +141,10 @@ CREATE TABLE CoachingGroups ( \
 Please note that some of these may not be required, but when troubleshooting we found that after running these, the actual server decided to open.
 
 ## Group Members
-- Ori Adkins (gda20b)
-- Liam Salem (lcs21j)
-- Ryan Rowe (rfr21)
-- Sam Zinn (sjz20g)
+- Ori Adkins 
+- Liam Salem 
+- Ryan Rowe 
+- Sam Zinn 
 
 ## Distribution Plan
 This step-by-step report outlines the hypothetical process of deploying our Flask application, which currently uses SQLAlchemy on localhost, to the cloud. The deployment process involves containerizing the application and then deploying it to a cloud service. Containerizing our Flask application and deploying it to the cloud would have made our development process more efficient. It ensures an application runs consistently across all environments, simplifying the process of managing dependencies. It also allows us to easily scale our application to handle more traffic as needed.
